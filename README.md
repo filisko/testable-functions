@@ -145,7 +145,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes a
 The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/filisko/testable-phpfunctions.svg?style=flat
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-informational.svg?style=flat
 [ico-ga]: https://github.com/filisko/testable-phpfunctions/workflows/testing/badge.svg
 [ico-coverage]: https://coveralls.io/repos/github/filisko/testable-phpfunctions/badge.svg?branch=main
 [ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat
