@@ -32,7 +32,7 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 ### Functions class
 
-This class accepts any PHP function that you would normally call as a method.
+This class accepts any PHP function that you would normally call, as a method (it uses the `__call` hook internally to forward the function call to PHP).
 
 This can be particularly useful for operations that involve IO:
 
