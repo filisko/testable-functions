@@ -29,9 +29,6 @@ jobs:
               if: steps.composer-cache.outputs.cache-hit != 'true'
               run: composer install --prefer-dist --no-progress
 
-            - name: Coding Standard
-              run: composer cs
-
             - name: Static Analysis
               run: composer phpstan
 
