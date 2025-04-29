@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Filisko\Tests;
 
+use BadMethodCallException;
 use Filisko\FakeFunctions;
 use Filisko\FakeStack;
 use Filisko\FakeStack\EmptyStack;
@@ -260,6 +261,27 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(1, $functions->exitCode());
     }
 
+    public function test_exitCode_throws_exception(): void
+    {
+        $functions = new FakeFunctions();
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Exit was never called. Use: exited() first');
+        $this->assertSame(1, $functions->exitCode());
+        $functions->exit(1);
+    }
+
+
+    public function test_dieCode_throws_exception(): void
+    {
+        $functions = new FakeFunctions();
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Die was never called. Use: died() first');
+        $this->assertSame(1, $functions->dieCode());
+        $functions->exit(1);
+    }
+
     public function test_die(): void
     {
         $functions = new FakeFunctions();
@@ -370,6 +392,7 @@ class FakeFunctionsTest extends TestCase
         ], $functions->pendingCalls());
         $this->assertSame(2, $functions->pendingCallsCount());
 
+        $this->assertSame(0, $functions->wasCalledTimes('trim'));
         $functions->function_exists('test');
         $functions->trim(" test ");
         $functions->callable();
