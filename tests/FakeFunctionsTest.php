@@ -6,7 +6,7 @@ namespace Filisko\Tests;
 
 use Filisko\FakeFunctions;
 use Filisko\FakeStack;
-use Filisko\FakeStack\EmptyFakeStackException;
+use Filisko\FakeStack\EmptyStackException;
 use Filisko\FakeStack\NotMockedFunction;
 use PHPUnit\Framework\TestCase;
 
@@ -52,6 +52,29 @@ class FakeFunctionsTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function test_callables_are_logged(): void
+    {
+        $functions = new FakeFunctions([
+            'some_function' => function (string $param) {
+                return $param;
+            }
+        ]);
+
+        $result = $functions->some_function('test');
+
+        $this->assertEquals('test', $result);
+
+        // callable values are logged
+        // src/FakeFunctions.php:93
+        $this->assertEquals([
+            'some_function' => [
+                ['test'],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('some_function'));
+    }
+
     public function test_it_supports_values_directly(): void
     {
         $functions = new FakeFunctions([
@@ -61,6 +84,16 @@ class FakeFunctionsTest extends TestCase
         $result = $functions->function_exists('test');
 
         $this->assertSame(true, $result);
+
+        // values are logged
+        // src/FakeFunctions.php:102
+        $this->assertEquals([
+            'function_exists' => [
+                ['test'],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('function_exists'));
     }
 
     public function test_it_supports_a_stack_of_values(): void
@@ -80,7 +113,20 @@ class FakeFunctionsTest extends TestCase
 
         $this->assertSame(false, $functions->function_exists());
         $this->assertEquals('1test', $functions->function_exists('test'));
+
+
         $this->assertSame(true, $functions->function_exists());
+        // functions using stacks are logged
+        // src/FakeFunctions.php:98
+        $this->assertEquals([
+            'function_exists' => [
+                [],
+                ['test'],
+                [],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('function_exists'));
     }
 
     public function test_it_throws_an_exception_when_value_is_needed_but_stack_is_empty(): void
@@ -93,19 +139,38 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('one', $functions->function_exists('test'));
 
         // second execution requires a value but the stack is empty
-        $this->expectException(EmptyFakeStackException::class);
+        $this->expectException(EmptyStackException::class);
         $this->assertSame(true, $functions->function_exists('test'));
     }
 
-    public function test_it_throws_an_exception_when_result_for_function_is_not_set(): void
+    public function test_it_throws_an_exception_when_result_for_function_is_not_set_and_failOnMissing_is_set(): void
     {
-        $functions = new FakeFunctions();
+        $functions = new FakeFunctions([], true);
 
         // trim is note defined
         $this->expectException(NotMockedFunction::class);
         $result = $functions->trim('       test       ');
 
         $this->assertSame('test', $result);
+    }
+
+    public function test_it_delegates_to_php_when_result_for_function_is_not_set_and_failOnMissing_is_default(): void
+    {
+        $functions = new FakeFunctions();
+
+        $result = $functions->trim('       test       ');
+
+        $this->assertSame('test', $result);
+
+        // native functions are logged
+        // src/FakeFunctions.php:86
+        $this->assertEquals([
+            'trim' => [
+                ['       test       '],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('trim'));
     }
 
     /**
@@ -128,6 +193,16 @@ class FakeFunctionsTest extends TestCase
         $functions->require_once('test');
 
         $this->assertSame(123, $test);
+
+        // run() functions logged
+        $this->assertEquals([
+            'require_once' => [
+                ['file.php'],
+                ['test'],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('require_once'));
     }
 
     public function test_require(): void
@@ -141,7 +216,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('file.php', $functions->require('file.php'));
     }
 
-    public function test_includeOnce(): void
+    public function test_include_once(): void
     {
         $functions = new FakeFunctions([
             'include_once' => new FakeStack(['test'])
@@ -163,11 +238,12 @@ class FakeFunctionsTest extends TestCase
     {
         $functions = new FakeFunctions();
 
-        $this->assertFalse($functions->didExit());
+        $this->assertFalse($functions->exited());
 
         $functions->exit(1);
 
-        $this->assertTrue($functions->didExit());
+        $this->assertTrue($functions->exited());
+        $this->assertSame(1, $functions->wasCalledTimes('exit'));
         $this->assertSame(1, $functions->exitCode());
     }
 
@@ -180,6 +256,7 @@ class FakeFunctionsTest extends TestCase
         $functions->die("Bye bye");
 
         $this->assertTrue($functions->died());
+        $this->assertSame(1, $functions->wasCalledTimes('die'));
         $this->assertSame("Bye bye", $functions->dieCode());
     }
 
@@ -200,6 +277,16 @@ class FakeFunctionsTest extends TestCase
         ], $functions->echos());
 
         $this->assertTrue($functions->wasEchoed('Second one'));
+
+        $this->assertEquals([
+            'echo' => [
+                ['Bye bye'],
+                ['Second one'],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('echo'));
+        $this->assertSame(2, $functions->wasCalledTimes('echo'));
     }
 
     public function test_print(): void
@@ -219,5 +306,72 @@ class FakeFunctionsTest extends TestCase
         ], $functions->prints());
 
         $this->assertTrue($functions->wasPrinted('Bye bye'));
+
+        $this->assertEquals([
+            'print' => [
+                ['Bye bye'],
+                ['Second one'],
+            ],
+        ], $functions->calls());
+
+        $this->assertTrue($functions->wasCalled('print'));
+    }
+
+    public function test_pending_calls(): void
+    {
+        $functions = new FakeFunctions([
+            'some_function' => new FakeStack([true, false]),
+            'function_exists' => new FakeStack([true]),
+            'value' => true,
+            'callable' => function () {
+                return true;
+            }
+        ]);
+
+        $this->assertEquals([
+            'some_function' => 2,
+            'function_exists' => 1,
+            'value' => 1,
+            'callable' => 1,
+        ], $functions->pendingCalls());
+
+        $this->assertSame(5, $functions->pendingCallsCount());
+
+        $functions->some_function();
+        $this->assertSame([
+            'some_function' => 1,
+            'function_exists' => 1,
+            'value' => 1,
+            'callable' => 1,
+        ], $functions->pendingCalls());
+        $this->assertSame(4, $functions->pendingCallsCount());
+
+        $functions->some_function();
+        $functions->value();
+
+        $this->assertSame([
+            'some_function' => 0,
+            'function_exists' => 1,
+            'value' => 0,
+            'callable' => 1,
+        ], $functions->pendingCalls());
+        $this->assertSame(2, $functions->pendingCallsCount());
+
+        $functions->function_exists('test');
+        $functions->trim(" test ");
+        $functions->callable();
+        $this->assertSame([
+            'some_function' => 0,
+            'function_exists' => 0,
+            'value' => 0,
+            'callable' => 0,
+        ], $functions->pendingCalls());
+        $this->assertSame(0, $functions->pendingCallsCount());
+
+        $this->assertSame(1, $functions->wasCalledTimes('trim'));
+        $this->assertSame([[' test ']], $functions->calls('trim'));
+
+        $this->expectException(EmptyStackException::class);;
+        $functions->some_function();
     }
 }

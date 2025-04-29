@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Filisko;
 
-use Filisko\FakeStack\EmptyFakeStackException;
+use BadMethodCallException;
+use Filisko\FakeStack\EmptyStackException;
 use Filisko\FakeStack\NotMockedFunction;
+use Filisko\FakeStack\UsedFunction;
 
 /**
  * Used for testing environment.
@@ -13,54 +15,126 @@ use Filisko\FakeStack\NotMockedFunction;
  */
 class FakeFunctions extends Functions
 {
-    /** @var array<string,mixed|FakeStack> */
+    /**
+     * @var array<string,mixed|FakeStack> Functions and their results.
+     */
     protected $functions;
 
     /**
-     * @var int|string|bool It is false when it was not triggered.
+     * @var bool Whether to fail or not when a function result is missing.
      */
-    protected $exitCode = false;
+    protected $failOnMissing;
 
     /**
-     * @var int|string|bool It is false when it was not triggered.
+     * @var array<string,array> calls made to functions.
      */
-    protected $dieCode = false;
-
-    /** @var string[] */
-    protected $echos = [];
-
-    /** @var string[] */
-    protected $prints = [];
+    protected $calls = [];
 
     /**
-     * @param array<string,mixed> $functions
+     * @param array<string,mixed|FakeStack> $functions
      */
-    public function __construct(array $functions = [])
+    public function __construct(array $functions = [], bool $failOnMissing = false)
     {
         $this->functions = $functions;
+        $this->failOnMissing = $failOnMissing;
+    }
+
+    private function addCall(string $function, array $args): void
+    {
+        if (!isset($this->calls[$function])) {
+            $this->calls[$function] = [];
+        }
+
+        $this->calls[$function][] = $args;
+    }
+
+    public function calls(?string $function = null): array
+    {
+        if (null !== $function) {
+            return $this->calls[$function] ?? [];
+        }
+
+        return $this->calls;
+    }
+
+    public function wasCalled(string $function): bool
+    {
+        return isset($this->calls[$function]);
+    }
+
+    public function wasCalledTimes(string $function): int
+    {
+        if (!isset($this->calls[$function])) {
+            return 0;
+        }
+
+        return count($this->calls[$function]);
+    }
+
+    public function pendingCalls(): array
+    {
+        $pending = [];
+
+        foreach ($this->functions as $function => $value) {
+            if (!isset($pending[$function])) {
+                $pending[$function] = 0;
+            }
+
+            if ($value instanceof FakeStack) {
+                $pending[$function] = $value->remaining();
+            } elseif ($value instanceof UsedFunction) {
+                $pending[$function] = 0;
+            } else {
+                $pending[$function] += 1;
+            }
+        }
+
+        return $pending;
+    }
+
+    public function pendingCallsCount(): int
+    {
+        $pending = 0;
+
+        foreach ($this->pendingCalls() as $count) {
+            $pending += $count;
+        }
+
+        return $pending;
     }
 
     /**
      * @return mixed
-     * @throws EmptyFakeStackException
+     * @throws EmptyStackException
      * @throws NotMockedFunction
      */
     protected function run($function, $args)
     {
-        if (!isset($this->functions[$function])) {
+        if ($this->failOnMissing && !isset($this->functions[$function])) {
             throw new NotMockedFunction(sprintf('Function "%s" was not mocked', $function));
+        }
+
+        if (!$this->failOnMissing && !isset($this->functions[$function])) {
+            $this->addCall($function, $args);
+            return $function(...$args);
         }
 
         $fake = $this->functions[$function];
 
         if (is_callable($fake)) {
+            $this->addCall($function, $args);
+            $this->functions[$function] = new UsedFunction();
             return call_user_func_array($fake, $args);
         }
 
         if ($fake instanceof FakeStack) {
+            $this->addCall($function, $args);
             return $fake->value($args);
         }
 
+        // any value
+        $this->addCall($function, $args);
+        $this->functions[$function] = new UsedFunction();
         return $fake;
     }
 
@@ -111,7 +185,7 @@ class FakeFunctions extends Functions
      */
     public function exit($status = 0)
     {
-        $this->exitCode = $status;
+        $this->addCall('exit', func_get_args());
     }
 
     /**
@@ -119,15 +193,21 @@ class FakeFunctions extends Functions
      */
     public function exitCode()
     {
-        return $this->exitCode;
+        if (!isset($this->calls['exit'])) {
+            throw new BadMethodCallException('Exit was never called. Use: exited() first');
+        }
+
+        // first call, first argument
+        return $this->calls['exit'][0][0];
     }
 
-    /**
-     * @return bool
-     */
-    public function didExit()
+    public function exited(): bool
     {
-        return $this->exitCode !== false;
+        if (!isset($this->calls['exit'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -135,15 +215,16 @@ class FakeFunctions extends Functions
      */
     public function die($status = "")
     {
-        $this->dieCode = $status;
+        $this->addCall('die', func_get_args());
     }
 
-    /**
-     * @return bool
-     */
-    public function died()
+    public function died(): bool
     {
-        return $this->dieCode !== false;
+        if (!isset($this->calls['die'])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -151,7 +232,12 @@ class FakeFunctions extends Functions
      */
     public function dieCode()
     {
-        return $this->dieCode;
+        if (!isset($this->calls['die'])) {
+            throw new BadMethodCallException('Die was never called. Use: died() first');
+        }
+
+        // die function -> first call -> first argument
+        return $this->calls['die'][0][0];
     }
 
     /**
@@ -159,7 +245,7 @@ class FakeFunctions extends Functions
      */
     public function echo($string)
     {
-        $this->echos[] = $string;
+        $this->addCall('echo', func_get_args());
     }
 
     /**
@@ -167,12 +253,18 @@ class FakeFunctions extends Functions
      */
     public function echos(): array
     {
-        return $this->echos;
+        if (!isset($this->calls['echo'])) {
+            return [];
+        }
+
+        $echos = $this->calls['echo'];
+
+        return array_merge(...$echos);
     }
 
-    public function wasEchoed(string $expected): bool
+    public function wasEchoed(string $text): bool
     {
-        return in_array($expected, $this->echos);
+        return in_array($text, $this->echos());
     }
 
     /**
@@ -180,12 +272,7 @@ class FakeFunctions extends Functions
      */
     public function print($string)
     {
-        $this->prints[] = $string;
-    }
-
-    public function wasPrinted(string $expected): bool
-    {
-        return in_array($expected, $this->prints);
+        $this->addCall('print', func_get_args());
     }
 
     /**
@@ -193,6 +280,17 @@ class FakeFunctions extends Functions
      */
     public function prints(): array
     {
-        return $this->prints;
+        if (!isset($this->calls['print'])) {
+            return [];
+        }
+
+        $prints = $this->calls['print'];
+
+        return array_merge(...$prints);
+    }
+
+    public function wasPrinted(string $text): bool
+    {
+        return in_array($text, $this->prints());
     }
 }
