@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Filisko\Tests\Example;
+namespace Filisko\Tests\Examples\Email;
 
 use Filisko\Functions;
 use InvalidArgumentException;
