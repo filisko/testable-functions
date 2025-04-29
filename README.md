@@ -125,7 +125,7 @@ $functions = new \Filisko\FakeFunctions([
 ]);
 
 // this variable will make FakeFunctions throw NotMockedFunction
-// when a mock for a function was not set, but it was called anyway (like an unexpected call)
+// when a mock for a function was not set but it was called anyway (like an unexpected call)
 // by default its false, this is so so that it fallbacks to PHP functions
 // e.g.: trim, filter_var, etc. will work normally
 $failOnMissing = true;
