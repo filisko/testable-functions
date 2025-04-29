@@ -34,7 +34,7 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 This class accepts any PHP function that you would normally call as a method.
 
-This can come be very handy for operations that involve IO:
+This can be particularly useful for operations that involve IO:
 
 ```php
 $functions = new \Filisko\Functions();
