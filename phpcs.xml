@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="Coding standard">
+    <description>Coding standard</description>
+
+    <!-- display progress -->
+    <arg value="p"/>
+    <arg name="report" value="full"/>
+    <arg name="colors"/>
+
+    <!-- coding standard -->
+    <rule ref="PSR2"/>
+
+    <!-- Only apply snake_case exception to test files -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>*/tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Paths to check -->
+    <file>src</file>
+    <file>tests</file>
+</ruleset>
