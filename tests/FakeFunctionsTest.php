@@ -37,6 +37,7 @@ class FakeFunctionsTest extends TestCase
     /**
      * @dataProvider dataProvider_for_callables
      * @param array<string,callable> $input
+     * @param array<string,bool> $expected
      */
     public function test_it_supports_callables(array $input, $expected): void
     {
@@ -108,9 +109,9 @@ class FakeFunctionsTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
+     * @runInSeparateProcess It has $test global.
      */
-    public function test_requireOnce(): void
+    public function test_require_once(): void
     {
         $functions = new FakeFunctions([
             'require_once' => new FakeStack(['one', function () {
@@ -120,11 +121,11 @@ class FakeFunctionsTest extends TestCase
             }])
         ]);
 
-        $this->assertSame('one', $functions->requireOnce('file.php'));
+        $this->assertSame('one', $functions->require_once('file.php'));
 
         // accessing the global again
         global $test;
-        $functions->requireOnce('test');
+        $functions->require_once('test');
 
         $this->assertSame(123, $test);
     }
@@ -146,7 +147,7 @@ class FakeFunctionsTest extends TestCase
             'include_once' => new FakeStack(['test'])
         ]);
 
-        $this->assertSame('test', $functions->includeOnce('file.php'));
+        $this->assertSame('test', $functions->include_once('file.php'));
     }
 
     public function test_include(): void

@@ -29,11 +29,11 @@ class FunctionsTest extends TestCase
         $functions->nope();
     }
 
-    public function test_requireOnce(): void
+    public function test_require_once(): void
     {
         $functions = new Functions();
 
-        $result = $functions->requireOnce(__DIR__.'/FunctionsTests/require_me_once.php');
+        $result = $functions->require_once(__DIR__.'/FunctionsTests/require_me_once.php');
         $this->assertSame(['required_once' => true], $result);
     }
 
@@ -41,15 +41,15 @@ class FunctionsTest extends TestCase
     {
         $functions = new Functions();
 
-        $result = $functions->requireOnce(__DIR__.'/FunctionsTests/require_me.php');
+        $result = $functions->require(__DIR__.'/FunctionsTests/require_me.php');
         $this->assertSame(['required' => true], $result);
     }
 
-    public function test_includeOnce(): void
+    public function test_include_once(): void
     {
         $functions = new Functions();
 
-        $result = $functions->includeOnce(__DIR__.'/FunctionsTests/include_me_once.php');
+        $result = $functions->include_once(__DIR__.'/FunctionsTests/include_me_once.php');
         $this->assertSame(['included_once' => true], $result);
     }
 

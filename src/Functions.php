@@ -26,7 +26,6 @@ class Functions
             throw new BadFunctionCallException(sprintf('Function "%s" does not exist', $function));
         }
 
-        /** @phpstan-ignore-next-line */
         return call_user_func_array($function, $arguments);
     }
 
@@ -35,7 +34,7 @@ class Functions
       *               Otherwise returns the result of the included file (which could be any type)
       *               Returns FALSE on failure.
      */
-    public function requireOnce(string $path)
+    public function require_once(string $path)
     {
         return require_once $path;
     }
@@ -56,7 +55,7 @@ class Functions
      *               Otherwise returns the result of the included file (which could be any type)
      *               Returns FALSE on failure
      */
-    public function includeOnce(string $path)
+    public function include_once(string $path)
     {
         return include_once $path;
     }

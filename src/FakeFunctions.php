@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Filisko;
 
+use Filisko\FakeStack\EmptyFakeStackException;
 use Filisko\FakeStack\NotMockedFunction;
 
 /**
@@ -12,7 +13,7 @@ use Filisko\FakeStack\NotMockedFunction;
  */
 class FakeFunctions extends Functions
 {
-    /** @var array<string,callable> */
+    /** @var array<string,mixed|FakeStack> */
     protected $functions;
 
     /**
@@ -39,13 +40,18 @@ class FakeFunctions extends Functions
         $this->functions = $functions;
     }
 
-    protected function run($func, $args)
+    /**
+     * @return mixed
+     * @throws EmptyFakeStackException
+     * @throws NotMockedFunction
+     */
+    protected function run($function, $args)
     {
-        if (!isset($this->functions[$func])) {
-            throw new NotMockedFunction(sprintf('Function "%s" was not mocked', $func));
+        if (!isset($this->functions[$function])) {
+            throw new NotMockedFunction(sprintf('Function "%s" was not mocked', $function));
         }
 
-        $fake = $this->functions[$func];
+        $fake = $this->functions[$function];
 
         if (is_callable($fake)) {
             return call_user_func_array($fake, $args);
@@ -71,7 +77,7 @@ class FakeFunctions extends Functions
     /**
      * @inheritDoc
      */
-    public function requireOnce(string $path)
+    public function require_once(string $path)
     {
         return $this->run('require_once', func_get_args());
     }
@@ -87,7 +93,7 @@ class FakeFunctions extends Functions
     /**
      * @inheritDoc
      */
-    public function includeOnce(string $path)
+    public function include_once(string $path)
     {
         return $this->run('include_once', func_get_args());
     }

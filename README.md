@@ -42,4 +42,3 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 
 [link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
 [link-downloads]: https://packagist.org/packages/filisko/testable-phpfunctions
-# testable-phpfunctions
