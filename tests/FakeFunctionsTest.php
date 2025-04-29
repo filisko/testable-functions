@@ -6,8 +6,9 @@ namespace Filisko\Tests;
 
 use Filisko\FakeFunctions;
 use Filisko\FakeStack;
-use Filisko\FakeStack\EmptyStackException;
+use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class FakeFunctionsTest extends TestCase
@@ -139,8 +140,20 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('one', $functions->function_exists('test'));
 
         // second execution requires a value but the stack is empty
-        $this->expectException(EmptyStackException::class);
+        $this->expectException(EmptyStack::class);
         $this->assertSame(true, $functions->function_exists('test'));
+    }
+
+    public function test_it_throws_an_exception_when_value_is_needed_but_it_was_used(): void
+    {
+        $functions = new FakeFunctions([
+            'function_exists' => false
+        ]);
+
+        // first execution
+        $this->assertEquals(false, $functions->function_exists('test'));
+        var_dump();
+//        $this->assertEquals(true, $functions->function_exists('test'));
     }
 
     public function test_it_throws_an_exception_when_result_for_function_is_not_set_and_failOnMissing_is_set(): void
@@ -371,7 +384,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(1, $functions->wasCalledTimes('trim'));
         $this->assertSame([[' test ']], $functions->calls('trim'));
 
-        $this->expectException(EmptyStackException::class);;
+        $this->expectException(EmptyStack::class);;
         $functions->some_function();
     }
 }

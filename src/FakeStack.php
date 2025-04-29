@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Filisko;
 
-use Filisko\FakeStack\EmptyStackException;
+use Filisko\FakeStack\EmptyStack;
 
 class FakeStack
 {
@@ -18,13 +18,13 @@ class FakeStack
     /**
      * Gives the next value and removes it from the stack.
      *
-     * @throws EmptyStackException
      * @return mixed
+     *@throws EmptyStack
      */
     public function value($args)
     {
         if (count($this->fakes) === 0) {
-            throw new EmptyStackException('Stack is empty');
+            throw new EmptyStack('Stack is empty');
         }
 
         $result = array_shift($this->fakes);

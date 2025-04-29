@@ -32,9 +32,9 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 ### Functions class
 
-This class accepts any PHP function that you would normally call, as a method (it uses the `__call` hook internally to forward the function call to PHP).
+This class accepts any PHP function that you would normally call, as a method. It uses the `__call` hook internally to forward the function call to PHP.
 
-This can be particularly useful for operations that involve IO:
+Using this class can be particularly useful for operations that involve IO, because later on it can be easily mocked:
 
 ```php
 $functions = new \Filisko\Functions();
@@ -52,7 +52,7 @@ $functions->fsockopen($hostname);
 $functions->password_verify($password);
 ```
 
-These can be mocked in a such a simple manner:
+These can be easily mocked like this:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
@@ -68,9 +68,9 @@ $functions->file_exists($path);
 $functions->is_dir($dirname);
 ```
 
-It also supports PHP language constructs, which generally are really hard to test.
+Legacy projects are usually require/include oriented-architectures, so these can come very handy.
 
-Legacy projects are usually require/include oriented-architectures, so this can come very handy.
+The library supports PHP language constructs (not functions and parsed differently by PHP), which generally are really hard to test.
 
 ```php
 $functions->require_once($path);
@@ -83,7 +83,7 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-An example mocking those would be:
+And these can be easily mocked too:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
@@ -106,7 +106,38 @@ global $var;
 $functions->include($dirname);
 ```
 
-#### 
+#### FakeFunctions class
+
+As shown in the previous example, this class is used as a replacement for the production class (Functions) in testing environment.
+
+This class provides many helper methods:
+
+```php
+// this objecct would be usually passed to the constructor of the service
+$functions = new \Filisko\FakeFunctions([
+    'some_function' => true,
+    'some_function' => function() {
+        return true;
+    },
+    // this accepts an array of values that will be used for the next call
+    // it will throw a EmptyStackException if you trigger a call but the stack is empty
+    'some_function' => new FakeStack([true, false, 1, 2]),
+]);
+
+// this variable will make FakeFunctions throw NotMockedFunction
+// when a mock for a function was not set, but it was called anyway (like an unexpected call)
+// by default its false, this is so so that it fallbacks to PHP functions
+// e.g.: trim, filter_var, etc. will work normally
+$failOnMissing = true;
+$functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
+
+// returns true/false when die() is called
+$functions->died();
+// returns die code or string passed to die($status)
+$functions->dieCode();
+
+
+```
 
 
 Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes and [CONTRIBUTING](CONTRIBUTING.md) for contributing details.

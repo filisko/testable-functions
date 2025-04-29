@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Filisko;
 
 use BadMethodCallException;
-use Filisko\FakeStack\EmptyStackException;
+use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\UsedFunction;
 
@@ -105,7 +105,7 @@ class FakeFunctions extends Functions
 
     /**
      * @return mixed
-     * @throws EmptyStackException
+     * @throws EmptyStack
      * @throws NotMockedFunction
      */
     protected function run($function, $args)

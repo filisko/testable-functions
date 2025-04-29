@@ -19,7 +19,7 @@ class EmailServiceTest extends TestCase
 
         $service = new EmailService($functions);
 
-        // sendEmail will exit in production if it fails
+        // sendEmail exits in production if it fails
         $service->sendEmail('test@example.com', 'Test', 'Hello');
 
         // but here, we can assert that exit was called without it actually exiting
