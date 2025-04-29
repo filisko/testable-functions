@@ -139,6 +139,7 @@ $functions->dieCode();
 
 ```
 
+## License and Contribution
 
 Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes and [CONTRIBUTING](CONTRIBUTING.md) for contributing details.
 
