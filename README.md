@@ -68,7 +68,7 @@ $functions->file_exists($path);
 $functions->is_dir($dirname);
 ```
 
-Legacy projects are usually require/include oriented-architectures, so these can come very handy.
+Legacy projects are usually require/include oriented-architectures, so the following can be very handy.
 
 The library supports PHP language constructs (not functions and parsed differently by PHP), which generally are really hard to test.
 
