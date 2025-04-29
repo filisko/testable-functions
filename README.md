@@ -108,13 +108,6 @@ $functions->include($dirname);
 
 #### 
 
-## Other testing utilities
-
-- PSR-3 fake logger: [filisko/fake-psr3-logger](https://github.com/filisko/fake-psr3-logger)
-- PSR-15 middleware dispatcher: [middlewares/utils](https://github.com/middlewares/utils?tab=readme-ov-file#dispatcher) (used in conjuction with PSR-7 and PSR-17)
-- PSR-16 fake cache: [kodus/mock-cache](https://github.com/kodus/mock-cache)
-
----
 
 Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes and [CONTRIBUTING](CONTRIBUTING.md) for contributing details.
 
@@ -128,3 +121,11 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 
 [link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
 [link-downloads]: https://packagist.org/packages/filisko/testable-phpfunctions
+
+---
+
+## Other testing utilities
+
+- PSR-3 fake logger: [filisko/fake-psr3-logger](https://github.com/filisko/fake-psr3-logger)
+- PSR-15 middleware dispatcher: [middlewares/utils](https://github.com/middlewares/utils?tab=readme-ov-file#dispatcher) (used in conjuction with PSR-7 and PSR-17)
+- PSR-16 fake cache: [kodus/mock-cache](https://github.com/kodus/mock-cache)
