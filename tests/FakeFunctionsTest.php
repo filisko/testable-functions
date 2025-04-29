@@ -152,8 +152,8 @@ class FakeFunctionsTest extends TestCase
 
         // first execution
         $this->assertEquals(false, $functions->function_exists('test'));
-        var_dump();
-//        $this->assertEquals(true, $functions->function_exists('test'));
+
+        // TODO: trigger the call again
     }
 
     public function test_it_throws_an_exception_when_result_for_function_is_not_set_and_failOnMissing_is_set(): void
