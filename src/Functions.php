@@ -70,6 +70,7 @@ class Functions
     }
 
     /**
+     * @codeCoverageIgnore
      * @param int|string $status
      * @return void
      */
@@ -79,6 +80,7 @@ class Functions
     }
 
     /**
+     * @codeCoverageIgnore
      * @param int|string $status
      * @return void
      */
