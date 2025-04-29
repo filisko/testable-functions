@@ -3,6 +3,7 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
 ![Testing][ico-ga]
+![Coverage Status][ico-coverage]
 [![Total Downloads][ico-downloads]][link-downloads]
 
 This package provides a particularly useful approach for testing code that heavily relies on PHP built-in functions or language constructs that are normally challenging to test (can't mock it).
@@ -38,6 +39,7 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 [ico-version]: https://img.shields.io/packagist/v/filisko/testable-phpfunctions.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-ga]: https://github.com/filisko/testable-phpfunctions/workflows/testing/badge.svg
+[ico-coverage]: https://coveralls.io/repos/github/filisko/testable-phpfunctions/badge.svg?branch=master
 [ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
