@@ -31,7 +31,7 @@ class EmailServiceTest extends TestCase
         $this->assertEquals(
             'Failed to send email to: test@example.com',
             // first call, first argument
-            $functions->first('error_log')[0]
+            $functions->firstArgument('error_log')
         );
     }
 
