@@ -59,11 +59,17 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 
 ```php
 // ----- inside a PHP Unit test ------
+use PHPUnit\Framework\Assert;
 
 // this should be passed to the constructor of the class under test
 $functions = new \Filisko\FakeFunctions([
     'file_exists' => true,
-    'is_dir' => false,
+    'is_dir' => function(string $path)  {
+        // you can assert the parameters here
+        Assert::assertEquals('/path/to/dir', $path);
+
+        return false;
+    },
     // ...
 ]);
 
