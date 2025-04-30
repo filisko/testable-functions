@@ -39,6 +39,7 @@ Using this class can be particularly useful for code that involves IO operations
 Imagine the following code as production code:
 
 ```php
+// this should be passed to the constructor of the production class (it just forwards function calls to PHP)
 $functions = new \Filisko\Functions();
 
 // file related
@@ -57,11 +58,16 @@ $functions->password_verify($password);
 Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
 
 ```php
+// ----- inside a PHP Unit test ------
+
+// this should be passed to the constructor of the class under test
 $functions = new \Filisko\FakeFunctions([
     'file_exists' => true,
     'is_dir' => false,
     // ...
 ]);
+
+// ----- inside the class under test -----
 
 // returns true
 $functions->file_exists($path);
@@ -109,7 +115,7 @@ $functions->include($dirname);
 
 ### FakeFunctions class
 
-As shown in the previous examples, this class is used as a replacement for the Functions class in a testing environment, but it also provides many helper methods.
+As shown in the previous examples, this class is used as a replacement for the `Functions` class in the testing environment, but it also provides many helper methods for the tests.
 
 ```php
 $functions = new \Filisko\FakeFunctions([
