@@ -121,20 +121,29 @@ class FakeFunctions extends Functions
 
         $fake = $this->functions[$function];
 
-        if (is_callable($fake)) {
-            $this->addCall($function, $args);
-            $this->functions[$function] = new UsedFunction();
-            return call_user_func_array($fake, $args);
+        // throw exception for already consumed values
+        if ($fake instanceof UsedFunction) {
+            throw new EmptyStack(sprintf('Function "%s" was already used', $function));
         }
 
+        // handle stacks
         if ($fake instanceof FakeStack) {
             $this->addCall($function, $args);
             return $fake->value($args);
         }
 
-        // any value
+        // handle callables
+        if (is_callable($fake)) {
+            $this->addCall($function, $args);
+            $this->functions[$function] = new UsedFunction();
+
+            return call_user_func_array($fake, $args);
+        }
+
+        // handle values
         $this->addCall($function, $args);
         $this->functions[$function] = new UsedFunction();
+
         return $fake;
     }
 

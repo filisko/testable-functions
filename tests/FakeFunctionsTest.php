@@ -145,7 +145,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(true, $functions->function_exists('test'));
     }
 
-    public function test_it_throws_an_exception_when_value_is_needed_but_it_was_used(): void
+    public function test_it_throws_an_exception_when_value_is_needed_but_it_was_already_used(): void
     {
         $functions = new FakeFunctions([
             'function_exists' => false
@@ -154,7 +154,29 @@ class FakeFunctionsTest extends TestCase
         // first execution
         $this->assertEquals(false, $functions->function_exists('test'));
 
-        // TODO: trigger the call again
+        // second execution
+        $this->expectException(EmptyStack::class);
+        $this->expectExceptionMessage('Function "function_exists" was already used');
+
+        $functions->function_exists('test');
+    }
+
+    public function test_it_throws_an_exception_when_callable_is_called_but_it_was_already_used(): void
+    {
+        $functions = new FakeFunctions([
+            'function_exists' => function ($param) {
+                return $param;
+            }
+        ]);
+
+        // first execution
+        $this->assertEquals('test', $functions->function_exists('test'));
+
+        // second execution
+        $this->expectException(EmptyStack::class);
+        $this->expectExceptionMessage('Function "function_exists" was already used');
+
+        $functions->function_exists('test');
     }
 
     public function test_it_throws_an_exception_when_result_for_function_is_not_set_and_failOnMissing_is_set(): void
