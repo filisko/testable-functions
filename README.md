@@ -2,13 +2,13 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
-![Testing][ico-ga]
+![Testing][ico-tests]
 ![Coverage Status][ico-coverage]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This library provides a particularly useful approach for testing code that heavily relies on PHP built-in functions or language constructs that are normally challenging to test.
+This library provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs that are normally really hard to test.
 
-It's a great package to start adding tests to legacy code, or simply when one wants to use PHP's API. 
+That's why it's great for include/require-oriented architectures, such as legacy projects.
 
 ## Requirements
 
@@ -24,19 +24,22 @@ composer require filisko/testable-phpfunctions
 
 ## Usage
 
-This package provides two main classes: `FakeFunctions` used for testing environment with many helper methods (e.g.: PHPUnit) and `Functions`; the class you will use in production that provides a clean, injectable abstraction that forwards calls to PHP functions.
+The package provides two main classes: `Functions` used in production and `FakeFunctions` used for testing.
 
-Also, this package allows you to test places in your code that use PHP language constructs like require_once, include, echo, print, etc. that are not functions and are really hard to test. With this library you can easily do it.
+These two classes allow you to use PHP's built-in functions and language constructs (require_once, include, echo, print, etc.) without having to worry about tests.
 
 You can see a basic [example here](tests/Examples/Email) of production code and its tests along with many comments to make the example clearer.
 
 ### Functions class
 
-This class accepts any PHP function that you would normally call, as a method. It uses the `__call` hook internally to forward the function call to PHP.
+This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward function calls to PHP, and it also wraps PHP's language constructs like `require_once` inside functions.
 
-Using this class can be particularly useful for operations that involve IO, because later on it can be easily mocked:
+Using this class can be particularly useful for code that involves IO operations because later on, the result can be easily altered for testing purposes.
+
+Imagine the following code as production code:
 
 ```php
+// this should be passed to the constructor of the production class (it just forwards function calls to PHP)
 $functions = new \Filisko\Functions();
 
 // file related
@@ -52,14 +55,19 @@ $functions->fsockopen($hostname);
 $functions->password_verify($password);
 ```
 
-These can be easily mocked like this:
+Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
 
 ```php
+// ----- inside a PHP Unit test ------
+
+// this should be passed to the constructor of the class under test
 $functions = new \Filisko\FakeFunctions([
     'file_exists' => true,
     'is_dir' => false,
     // ...
 ]);
+
+// ----- inside the class under test -----
 
 // returns true
 $functions->file_exists($path);
@@ -68,9 +76,9 @@ $functions->file_exists($path);
 $functions->is_dir($dirname);
 ```
 
-Legacy projects are usually require/include oriented-architectures, so these can come very handy.
+Legacy projects are usually require/include oriented architectures, so the following can be very handy.
 
-The library supports PHP language constructs (not functions and parsed differently by PHP), which generally are really hard to test.
+As you've seen before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
 ```php
 $functions->require_once($path);
@@ -83,9 +91,12 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-And these can be easily mocked too:
+These can be easily altered too for testing purposes:
 
 ```php
+// ---------- inside a PHP Unit test ----------
+
+<?php
 $functions = new \Filisko\FakeFunctions([
     // simulating a file loading global vars
     'require_once' => function() {
@@ -93,70 +104,89 @@ $functions = new \Filisko\FakeFunctions([
         global $var
         $var = 1;
     },
+    // you can also load stuff from a file
+    'require' => function() {
+        eval(file_get_contents(__DIR__ . '/functions.php'));
+    },
     // simulating a file returning a value
     'include' => false,
 ]);
+
+// ------- inside the class under test --------
 
 // $var now is available
 $functions->require_once($path);
 global $var;
 
-
 // returns false
 $functions->include($dirname);
 ```
 
-#### FakeFunctions class
+Keep in mind that loading the following during tests will make the available across all the other tests:
 
-As shown in the previous example, this class is used as a replacement for the production class (Functions) in testing environment.
+- globals (use `@backupGlobals`)
+- classes or functions (`@runInSeparateProcess`)
+- static variables or properties (use `@backupStaticAttributes)
 
-This class provides many helper methods:
+To solve this issue, use PHPUnit docblocks shown above. Also, all those are to be used on each test method.
+
+`@runInSeparateProcess` will work for any case.
+
+Further more, passing `--process-isolation` to phpunit will apply `@runInSeparateProcess` to each single test globally, but that's not a good practice.
+
+### FakeFunctions class
+
+As shown in the previous examples, this class is used as a replacement for the `Functions` class in the testing environment, but it also provides many helper methods for the tests.
 
 ```php
-// this objecct would be usually passed to the constructor of the service
 $functions = new \Filisko\FakeFunctions([
+    // any value is supported
     'some_function' => true,
+
+    // callables are supported
     'some_function' => function() {
         return true;
     },
-    // this accepts an array of values that will be used for the next call
+
+    // a stack of values is supported that will be used for the next function call
     // it will throw a EmptyStackException if you trigger a call but the stack is empty
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
-// this variable will make FakeFunctions throw NotMockedFunction
-// when a mock for a function was not set but it was called anyway (like an unexpected call)
-// by default its false, this is so so that it fallbacks to PHP functions
+// also, we can adjust if we want FakeFunctions to throw a NotMockedFunction
+// when a result for a function was not set, but the function was called anyway (like an unexpected call)
+// This configuration defaults to false, which causes the code to fallback to native PHP functions
 // e.g.: trim, filter_var, etc. will work normally
 $failOnMissing = true;
 $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 
 // returns true/false when die() is called
 $functions->died();
+
 // returns die code or string passed to die($status)
 $functions->dieCode();
-
-
 ```
-
-
-Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes and [CONTRIBUTING](CONTRIBUTING.md) for contributing details.
-
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
-
-[ico-version]: https://img.shields.io/packagist/v/filisko/testable-phpfunctions.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-ga]: https://github.com/filisko/testable-phpfunctions/workflows/testing/badge.svg
-[ico-coverage]: https://coveralls.io/repos/github/filisko/testable-phpfunctions/badge.svg?branch=main
-[ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat-square
-
-[link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
-[link-downloads]: https://packagist.org/packages/filisko/testable-phpfunctions
-
----
 
 ## Other testing utilities
 
 - PSR-3 fake logger: [filisko/fake-psr3-logger](https://github.com/filisko/fake-psr3-logger)
 - PSR-15 middleware dispatcher: [middlewares/utils](https://github.com/middlewares/utils?tab=readme-ov-file#dispatcher) (used in conjuction with PSR-7 and PSR-17)
 - PSR-16 fake cache: [kodus/mock-cache](https://github.com/kodus/mock-cache)
+
+---
+
+## License and Contribution
+
+Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes and [CONTRIBUTING](CONTRIBUTING.md) for contributing details.
+
+The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/filisko/testable-phpfunctions.svg?style=flat
+[ico-license]: https://img.shields.io/badge/license-MIT-informational.svg?style=flat
+[ico-tests]: https://github.com/filisko/testable-phpfunctions/workflows/testing/badge.svg
+[ico-coverage]: https://coveralls.io/repos/github/filisko/testable-phpfunctions/badge.svg?branch=main
+[ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat
+
+[link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
+[link-downloads]: https://packagist.org/packages/filisko/testable-phpfunctions
+
