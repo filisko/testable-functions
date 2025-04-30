@@ -54,7 +54,7 @@ $functions->fsockopen($hostname);
 $functions->password_verify($password);
 ```
 
-Then, by using the `FakeFuctions` class in a testing environment the results of the functions can be easily altered like this:
+Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
