@@ -1,4 +1,4 @@
-x# Fake PHP functions
+# Fake PHP functions
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
