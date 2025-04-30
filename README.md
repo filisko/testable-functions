@@ -36,7 +36,7 @@ This class is like a proxy to PHP functions. It uses the `__call` hook internall
 
 Using this class can be particularly useful for code that involves IO operations because later, the result of those can be easily altered for testing purposes.
 
-Imagine the following code is production code:
+Imagine the following code as production code:
 
 ```php
 $functions = new \Filisko\Functions();
