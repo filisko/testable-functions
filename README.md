@@ -6,7 +6,7 @@
 ![Coverage Status][ico-coverage]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This library provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs, that are normally really hard to test.
+This library provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs that are normally really hard to test.
 
 It's also great for include/require-oriented architectures, such as legacy projects.
 
