@@ -71,10 +71,13 @@ jobs:
               if: matrix.php != '8.4'
               run: composer test
 
-            - name: Test and Upload coverage once
+            - name: Test with coverage
               if: matrix.php == '8.4'
-              env:
-                COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: |
-                  composer test
-                  composer coveralls
+              run: composer coverage
+
+            - name: Coveralls GitHub Action
+              if: matrix.php == '8.4'
+              uses: coverallsapp/github-action@v2
+              with:
+                github-token: ${{ secrets.GITHUB_TOKEN }}
+                file: build/logs/clover.xml
