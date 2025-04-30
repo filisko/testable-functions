@@ -416,7 +416,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(' test ', $functions->first('trim')[0]);
     }
 
-    public function test_argumentArgument(): void
+    public function test_firstArgument(): void
     {
         $functions = new FakeFunctions([
             'trim' => 'test',
@@ -427,7 +427,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(' test ', $functions->firstArgument('trim'));
     }
 
-    public function test_argumentArgument_throws_exception_when_function_was_no_called_yet(): void
+    public function test_firstArgument_throws_exception_when_function_was_no_called_yet(): void
     {
         $functions = new FakeFunctions([
             'trim' => new FakeStack(['test', 'asd']),
@@ -435,6 +435,7 @@ class FakeFunctionsTest extends TestCase
 
         $functions->trim(' test ', 'second argument');
 
+        // it returns first argument by default
         $this->assertSame(' test ', $functions->firstArgument('trim'));
 
         // choose second argument
