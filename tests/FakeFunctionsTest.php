@@ -409,6 +409,16 @@ class FakeFunctionsTest extends TestCase
         $functions->some_function();
     }
 
+    public function test_pending_calls_throws_exception_when_function_was_no_set(): void
+    {
+        $functions = new FakeFunctions();
+
+        $this->expectException(NotMockedFunction::class);
+        $this->expectExceptionMessage('Function "some_function" was not mocked but calls were requested');
+        
+        $functions->pendingCalls('some_function');
+    }
+
     public function test_first(): void
     {
         $functions = new FakeFunctions([

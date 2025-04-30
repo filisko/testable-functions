@@ -122,7 +122,7 @@ class FakeFunctions extends Functions
 
         if ($requestedFunction) {
             if ($pending === []) {
-                return 0;
+                throw new NotMockedFunction(sprintf('Function "%s" was not mocked but calls were requested', $requestedFunction));
             } else {
                 return $pending[$requestedFunction];
             }
