@@ -198,6 +198,12 @@ class FakeFunctionsTest extends TestCase
             ],
         ], $functions->calls());
 
+        // run() functions logged
+        $this->assertEquals([
+            ['file.php'],
+            ['test'],
+        ], $functions->calls('require_once'));
+
         $this->assertTrue($functions->wasCalled('require_once'));
     }
 
@@ -352,6 +358,11 @@ class FakeFunctionsTest extends TestCase
             'callable' => 1,
         ], $functions->pendingCalls());
 
+        $this->assertSame(2, $functions->pendingCalls('some_function'));
+        $this->assertSame(1, $functions->pendingCalls('function_exists'));
+        $this->assertSame(1, $functions->pendingCalls('value'));
+        $this->assertSame(1, $functions->pendingCalls('callable'));
+
         $this->assertSame(5, $functions->pendingCallsCount());
 
         $functions->some_function();
@@ -388,6 +399,11 @@ class FakeFunctionsTest extends TestCase
 
         $this->assertSame(1, $functions->wasCalledTimes('trim'));
         $this->assertSame([[' test ']], $functions->calls('trim'));
+
+        $this->assertSame(0, $functions->pendingCalls('some_function'));
+        $this->assertSame(0, $functions->pendingCalls('function_exists'));
+        $this->assertSame(0, $functions->pendingCalls('value'));
+        $this->assertSame(0, $functions->pendingCalls('callable'));
 
         $this->expectException(EmptyStack::class);;
         $functions->some_function();

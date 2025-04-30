@@ -146,31 +146,88 @@ As shown in the previous examples, this class is used as a replacement for the `
 
 ```php
 $functions = new \Filisko\FakeFunctions([
-    // any value is supported
+    // any value  (can only be used once, otherwise an exception will be thrown)
     'some_function' => true,
 
-    // callables are supported
+    // callables (can only be used once, otherwise an exception will be thrown)
     'some_function' => function() {
         return true;
     },
 
-    // a stack of values is supported that will be used for the next function call
-    // it will throw a EmptyStackException if you trigger a call but the stack is empty
+    // a stack of values that will be used for the next function call
+    // it will throw an exception if you trigger a call when the stack was already consumed
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
-// also, we can adjust if we want FakeFunctions to throw a NotMockedFunction
+// we can adjust if we want FakeFunctions to throw a NotMockedFunction exception
 // when a result for a function was not set, but the function was called anyway (like an unexpected call)
-// This configuration defaults to false, which causes the code to fallback to native PHP functions
-// e.g.: trim, filter_var, etc. will work normally
+// this configuration defaults to false, which causes to fallback to native PHP functions
+// this is useful so that trim, filter_var, etc. work as usual if they are not mocked
+// (although you could also use the function itself directly)
 $failOnMissing = true;
 $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 
-// returns true/false when die() is called
+// returns a bool of whether a function was called or not
+$functions->wasCalled('require_once');
+
+// returns an int of the number of times a function was called
+$functions->wasCalledTimes('require_once');
+
+// returns a list (array<string,int>) of function names together with the pending calls
+// e.g.: [ 'function_exists' => 2 ]  
+$functions->pendingCalls();
+
+// returns an int for the pending calls of a specific function
+$functions->pendingCalls('filter_var');
+
+// returns the total of all pending calls
+// (this can be used to assert the all values were consumed by the end of the test)
+$functions->pendingCallsCount();
+
+// returns an array of all the calls together with the arguments of each call
+// the example below is the result of two calls for the same function with different argument each time
+// e.g.: [ 'require_once' => [['file.php'], ['test.php']] ]
+$functions->calls();
+
+// returns an array of calls for one specific function
+// e.g.: [['file.php'], ['test.php']]
+$functions->calls('require_once');
+// e.g.: ['test.php']
+$functions->calls('require_once')[1];
+
+// returns the first call of a function (throws an exception if it wasn't called yet)
+// e.g.: ['argument']
+$functions->first('filter_var');
+// e.g.: 'argument'
+$functions->first('filter_var')[0];
+
+// returns the first argument of the first function call (throws an exception it wasn't called yet)
+// e.g.: 'argument'
+$functions->firstArgument('filter_var');
+
+// returns a string[] of all the echos
+$functions->echos();
+
+// returns a bool of whether the string was echoed or not
+$functions->wasEchoed('Was I echoed?');
+
+// returns a string[] of all the prints
+$functions->prints();
+
+// returns a bool of whether the string was echoed or not
+$functions->wasPrinted('Was I printed?');
+
+// returns a bool of whether die() was called or not
 $functions->died();
 
-// returns die code or string passed to die($status)
+// returns the die code or the string that was passed to die($status) when it was called
 $functions->dieCode();
+
+// returns a bool of whether exit() was called or not
+$functions->exited();
+
+// returns the exit code or the string that was passed to exit($status) when it was called
+$functions->exitCode();
 ```
 
 ## Other testing utilities

@@ -95,11 +95,18 @@ class FakeFunctions extends Functions
         return count($this->calls[$function]);
     }
 
-    public function pendingCalls(): array
+    /**
+     * @return array|int
+     */
+    public function pendingCalls(?string $requestedFunction = null)
     {
         $pending = [];
 
         foreach ($this->functions as $function => $value) {
+            if ($requestedFunction && $function !== $requestedFunction) {
+                continue;
+            }
+
             if (!isset($pending[$function])) {
                 $pending[$function] = 0;
             }
@@ -110,6 +117,14 @@ class FakeFunctions extends Functions
                 $pending[$function] = 0;
             } else {
                 $pending[$function] += 1;
+            }
+        }
+
+        if ($requestedFunction) {
+            if ($pending === []) {
+                return 0;
+            } else {
+                return $pending[$requestedFunction];
             }
         }
 
