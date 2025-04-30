@@ -24,7 +24,7 @@ composer require filisko/testable-phpfunctions
 
 ## Usage
 
-The package provides two main classes to work with: `FakeFunctions` used for testing environments and `Functions` used for production.
+The package provides two main classes: `FakeFunctions` used for testing environments and `Functions` used for production.
 
 Those two classes allow you to use PHP's built-in functions and language constructs (require_once, include, echo, print, etc.) without having to worry about tests.
 
