@@ -137,9 +137,19 @@ Keep in mind that loading the following during tests will make the available acr
 - classes or functions (`@runInSeparateProcess`)
 - static variables or properties (use `@backupStaticAttributes)
 
-To solve this issue, use PHPUnit docblocks shown above. Also, all those are to be used on each test method.
+To solve this issue, use PHPUnit's docblocks shown above.
 
-`@runInSeparateProcess` will work for any case.
+Also keep in mind that all those are to be applied to each single test.
+
+```php
+/**
+ * @runInSeparateProcess This docblock isolates any kind of persistent functionality.
+ */
+public function test_with_globals(): void
+{
+    // ...
+}
+```
 
 Further more, passing `--process-isolation` to phpunit will apply `@runInSeparateProcess` to each single test globally, but that's not a good practice.
 
