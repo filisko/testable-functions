@@ -139,7 +139,7 @@ Keep in mind that loading the following during tests will make the available acr
 
 To solve this issue, use PHPUnit's docblocks shown above.
 
-Also keep in mind that all those are to be applied to each single test.
+Also keep in mind that all those are to be applied to each single test:
 
 ```php
 /**
