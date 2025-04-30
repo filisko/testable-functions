@@ -15,7 +15,7 @@ class EmailServiceTest extends TestCase
         $functions = new FakeFunctions([
             // make mail fail
             'mail' => false,
-        ], false);
+        ]);
 
         // pass it to the constructor
         $service = new EmailService($functions);
@@ -31,7 +31,7 @@ class EmailServiceTest extends TestCase
         $this->assertEquals(
             'Failed to send email to: test@example.com',
             // first call, first argument
-            $functions->calls('error_log')[0][0]
+            $functions->first('error_log')[0]
         );
     }
 

@@ -9,6 +9,7 @@ use Filisko\FakeFunctions;
 use Filisko\FakeStack;
 use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
+use Filisko\FakeStack\WasNotCalled;
 use PHPUnit\Framework\TestCase;
 
 class FakeFunctionsTest extends TestCase
@@ -390,5 +391,53 @@ class FakeFunctionsTest extends TestCase
 
         $this->expectException(EmptyStack::class);;
         $functions->some_function();
+    }
+
+    public function test_first(): void
+    {
+        $functions = new FakeFunctions([
+            'trim' => 'test',
+        ]);
+
+       $functions->trim(' test ');
+
+       // first trim call, first argument
+        $this->assertSame(' test ', $functions->first('trim')[0]);
+    }
+
+    public function test_first_throws_exception_when_function_was_no_called_yet(): void
+    {
+        $functions = new FakeFunctions([
+            'trim' => 'test',
+        ]);
+
+        $this->expectException(WasNotCalled::class);
+        $this->expectExceptionMessage('Function "trim" was not called yet');;
+        $this->assertSame(' test ', $functions->first('trim')[0]);
+    }
+
+    public function test_argumentArgument(): void
+    {
+        $functions = new FakeFunctions([
+            'trim' => 'test',
+        ]);
+
+        $this->expectException(WasNotCalled::class);
+        $this->expectExceptionMessage('Function "trim" was not called yet');;
+        $this->assertSame(' test ', $functions->firstArgument('trim'));
+    }
+
+    public function test_argumentArgument_throws_exception_when_function_was_no_called_yet(): void
+    {
+        $functions = new FakeFunctions([
+            'trim' => new FakeStack(['test', 'asd']),
+        ]);
+
+        $functions->trim(' test ', 'second argument');
+
+        $this->assertSame(' test ', $functions->firstArgument('trim'));
+
+        // choose second argument
+        $this->assertSame('second argument', $functions->firstArgument('trim', 1));
     }
 }

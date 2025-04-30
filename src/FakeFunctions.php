@@ -8,6 +8,7 @@ use BadMethodCallException;
 use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\ConsumedFunction;
+use Filisko\FakeStack\WasNotCalled;
 
 /**
  * Used for testing environment.
@@ -55,6 +56,31 @@ class FakeFunctions extends Functions
         }
 
         return $this->calls;
+    }
+
+    /**
+     * @throws WasNotCalled
+     */
+    public function first(string $function): array
+    {
+        if (!isset($this->calls[$function])) {
+            throw new WasNotCalled(sprintf('Function "%s" was not called yet', $function));
+        }
+
+        return $this->calls[$function][0];
+    }
+
+    /**
+     * @return mixed
+     * @throws WasNotCalled
+     */
+    public function firstArgument(string $function, int $number = 0)
+    {
+        if (!isset($this->calls[$function])) {
+            throw new WasNotCalled(sprintf('Function "%s" was not called yet', $function));
+        }
+
+        return $this->calls[$function][0][$number];
     }
 
     public function wasCalled(string $function): bool
