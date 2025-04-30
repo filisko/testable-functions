@@ -235,7 +235,9 @@ $functions->exitCode();
 
 ## Why to use this package?
 
-Because we prefer simplicity over complicated mocking tools.
+Why to choose this package over a hundred other tools out there?
+
+Because we prefer simplicity over complicated mocking tools. We just have enough to achieve our purpose.
 
 This is a common example for other mocking tools:
 
