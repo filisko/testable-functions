@@ -256,7 +256,7 @@ $mock = $builder->build()
 $result = $mock->time();
 ```
 
-While we can simply do:
+While we simply do:
 
 ```php
 $functions = new FakeFunctions([
@@ -265,7 +265,6 @@ $functions = new FakeFunctions([
 
 $result = $functions->time();
 ```
-
 
 ## Other testing utilities
 
