@@ -8,7 +8,7 @@
 
 This library provides a particularly useful approach for testing code that heavily relies on PHP built-in functions or language constructs that are normally challenging to test.
 
-It's a great package to start adding tests to legacy code, or simply when one wants to use PHP's API. 
+It`s also great for include/require-oriented architectures, such as legacy projects.
 
 ## Requirements
 
