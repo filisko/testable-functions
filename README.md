@@ -159,7 +159,7 @@ $functions = new \Filisko\FakeFunctions([
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
-// we can adjust if we want to throw a NotMockedFunction exception
+// we can adjust if we want to throw an exception
 // when a result for a function was not set, but the function was called anyway (like an unexpected call)
 // this configuration defaults to false, which causes to fallback to native PHP functions
 // this is useful so that trim, filter_var, etc. work as usual if they are not mocked
