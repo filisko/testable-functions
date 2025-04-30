@@ -415,7 +415,7 @@ class FakeFunctionsTest extends TestCase
 
         $this->expectException(NotMockedFunction::class);
         $this->expectExceptionMessage('Function "some_function" was not mocked but calls were requested');
-        
+
         $functions->pendingCalls('some_function');
     }
 

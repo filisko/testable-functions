@@ -191,7 +191,7 @@ $functions->wasCalledTimes('require_once');
 // e.g.: [ 'function_exists' => 2 ]  
 $functions->pendingCalls();
 
-// returns an int for the pending calls of a specific function
+// returns an int for the pending calls of a specific function (it will throw an exception for a non-defined function calls)
 $functions->pendingCalls('filter_var');
 
 // returns the total of all pending calls
