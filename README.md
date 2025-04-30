@@ -24,7 +24,7 @@ composer require filisko/testable-phpfunctions
 
 ## Usage
 
-The package provides two main classes: `FakeFunctions` used for testing environments and `Functions` used for production.
+The package provides two main classes: `Functions` used in production and `FakeFunctions` used for testing.
 
 Those two classes allow you to use PHP's built-in functions and language constructs (require_once, include, echo, print, etc.) without having to worry about tests.
 
@@ -32,9 +32,11 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 ### Functions class
 
-This class is like a proxy to PHP functions. It uses the __call hook internally to forward the function calls to PHP, and it also wraps PHP's language constructs like require inside functions. This way, you already abstract yourself from using PHP directly.
+This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward function calls to PHP, and it also wraps PHP's language constructs like `require` inside functions. This way, you have already abstracted yourself from using PHP directly.
 
-Using this class can be particularly useful for operations that involve IO because later on they can be easily altered for testing purposes:
+Using this class can be particularly useful for code that involves IO operations because later, the result of those can be easily altered for testing purposes.
+
+Imagine the following code is production code:
 
 ```php
 $functions = new \Filisko\Functions();
@@ -52,7 +54,7 @@ $functions->fsockopen($hostname);
 $functions->password_verify($password);
 ```
 
-The return results can be easily changed like this:
+Then, using the `FakeFuctions` class in a testing environment, the results of the functions can be easily altered like this:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
@@ -68,7 +70,7 @@ $functions->file_exists($path);
 $functions->is_dir($dirname);
 ```
 
-Legacy projects are usually require/include oriented-architectures, so the following can be very handy.
+Legacy projects are usually require/include oriented architectures, so the following can be very handy.
 
 As you've seen before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
@@ -101,42 +103,41 @@ $functions = new \Filisko\FakeFunctions([
 $functions->require_once($path);
 global $var;
 
-
 // returns false
 $functions->include($dirname);
 ```
 
-#### FakeFunctions class
+### FakeFunctions class
 
-As shown in the previous examples, this class is used as a replacement for the Functions class in testing environment.
-
-This class provides many helper methods:
+As shown in the previous examples, this class is used as a replacement for the Functions class in a testing environment, but it also provides many helper methods.
 
 ```php
-// this objecct would be usually passed to the constructor of the service
 $functions = new \Filisko\FakeFunctions([
+    // any value is supported
     'some_function' => true,
+
+    // callables are supported
     'some_function' => function() {
         return true;
     },
-    // this accepts an array of values that will be used for the next call
+
+    // a stack of values is supported that will be used for the next function call
     // it will throw a EmptyStackException if you trigger a call but the stack is empty
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
-// this variable will make FakeFunctions throw NotMockedFunction
-// when a mock for a function was not set but it was called anyway (like an unexpected call)
-// by default its false, this is so so that it fallbacks to PHP functions
+// also, we can adjust if we want FakeFunctions to throw a NotMockedFunction
+// when a result for a function was not set, but the function was called anyway (like an unexpected call)
+// This configuration defaults to false, which causes the code to fallback to native PHP functions
 // e.g.: trim, filter_var, etc. will work normally
 $failOnMissing = true;
 $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 
 // returns true/false when die() is called
 $functions->died();
+
 // returns die code or string passed to die($status)
 $functions->dieCode();
-
-
 ```
 
 ## License and Contribution
