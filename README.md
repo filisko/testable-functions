@@ -91,9 +91,12 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-Then these can be easily altered for testing too:
+These can be easily altered too for testing purposes:
 
 ```php
+// ---------- inside a PHP Unit test ----------
+
+<?php
 $functions = new \Filisko\FakeFunctions([
     // simulating a file loading global vars
     'require_once' => function() {
@@ -101,9 +104,15 @@ $functions = new \Filisko\FakeFunctions([
         global $var
         $var = 1;
     },
+    // you can also load stuff from a file
+    'require' => function() {
+        eval(file_get_contents(__DIR__ . '/functions.php'));
+    },
     // simulating a file returning a value
     'include' => false,
 ]);
+
+// ------- inside the class under test --------
 
 // $var now is available
 $functions->require_once($path);
@@ -112,6 +121,18 @@ global $var;
 // returns false
 $functions->include($dirname);
 ```
+
+Keep in mind that loading the following during tests will make the available across all the other tests:
+
+- globals (use `@backupGlobals`)
+- classes or functions (`@runInSeparateProcess`)
+- static variables or properties (use `@backupStaticAttributes)
+
+To solve this issue, use PHPUnit docblocks shown above. Also, all those are to be used on each test method.
+
+`@runInSeparateProcess` will work for any case.
+
+Further more, passing `--process-isolation` to phpunit will apply `@runInSeparateProcess` to each single test globally, but that's not a good practice.
 
 ### FakeFunctions class
 
