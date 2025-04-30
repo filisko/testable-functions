@@ -24,17 +24,17 @@ composer require filisko/testable-phpfunctions
 
 ## Usage
 
-This package provides two main classes: `FakeFunctions` used for testing environments and `Functions` for production.
+The package provides two main classes to work with: `FakeFunctions` used for testing environments and `Functions` used for production.
 
-This package allows you to test the usage of PHP's functions and PHP's language constructs like require_once, include, echo, print, etc., that are are really hard to test. With this library, you can easily test both.
+Those two classes allow you to use PHP's built-in functions and language constructs (require_once, include, echo, print, etc.) without having to worry about tests.
 
 You can see a basic [example here](tests/Examples/Email) of production code and its tests along with many comments to make the example clearer.
 
 ### Functions class
 
-This class accepts any PHP function that you would normally call, as a method. It uses the `__call` hook internally to forward the function call to PHP.
+This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward the function calls to PHP, and it also wraps PHP's language constructs like `require` inside functions. This way, you already abstract yourself from using PHP directly.
 
-Using this class can be particularly useful for operations that involve IO, because later on it can be easily mocked:
+Using this class can be particularly useful for operations that involve IO because later on they can be easily altered for testing purposes:
 
 ```php
 $functions = new \Filisko\Functions();
@@ -52,7 +52,7 @@ $functions->fsockopen($hostname);
 $functions->password_verify($password);
 ```
 
-These can be easily mocked like this:
+The return results can be easily changed like this:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
@@ -70,7 +70,7 @@ $functions->is_dir($dirname);
 
 Legacy projects are usually require/include oriented-architectures, so the following can be very handy.
 
-The library supports PHP language constructs (not functions and parsed differently by PHP), which generally are really hard to test.
+As you've read before, the package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
 ```php
 $functions->require_once($path);
@@ -83,7 +83,7 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-And these can be easily mocked too:
+Then these can be easily altered for testing too:
 
 ```php
 $functions = new \Filisko\FakeFunctions([
@@ -108,7 +108,7 @@ $functions->include($dirname);
 
 #### FakeFunctions class
 
-As shown in the previous example, this class is used as a replacement for the production class (Functions) in testing environment.
+As shown in the previous examples, this class is used as a replacement for the Functions class in testing environment.
 
 This class provides many helper methods:
 
