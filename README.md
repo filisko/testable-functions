@@ -34,7 +34,7 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward function calls to PHP, and it also wraps PHP's language constructs like `require_once` inside functions.
 
-Using this class can be particularly useful for code that involves IO operations because later on, the result can be easily altered for testing purposes.
+Using this class can be particularly useful for code that involves IO operations because later on, the result of those operations can be easily altered for testing purposes.
 
 Imagine the following code as production code:
 
