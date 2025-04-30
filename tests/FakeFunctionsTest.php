@@ -9,7 +9,6 @@ use Filisko\FakeFunctions;
 use Filisko\FakeStack;
 use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class FakeFunctionsTest extends TestCase
