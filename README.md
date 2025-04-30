@@ -52,6 +52,7 @@ $functions->checkdnsrr($hostname);
 $functions->fsockopen($hostname);
 
 // etc...
+$functions->time();
 $functions->password_verify($password);
 ```
 
