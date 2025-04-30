@@ -61,7 +61,6 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 // ----- inside a PHP Unit test ------
 use PHPUnit\Framework\Assert;
 
-// this should be passed to the constructor of the class under test
 $functions = new \Filisko\FakeFunctions([
     'file_exists' => true,
     'is_dir' => function(string $path)  {
@@ -72,6 +71,10 @@ $functions = new \Filisko\FakeFunctions([
     },
     // ...
 ]);
+
+$fileManager = new FileManager($functions);
+
+$this->assertEquals(false, $client->do());
 
 // ----- inside the class under test -----
 
@@ -229,6 +232,38 @@ $functions->exited();
 // returns the exit code or the string that was passed to exit($status) when it was called
 $functions->exitCode();
 ```
+
+## Why to use this package?
+
+Because we prefer simplicity over complicated mocking tools.
+
+This is a common example for other mocking tools:
+
+```php
+$builder = new MockBuilder();
+$builder->setNamespace(__NAMESPACE__)
+        ->setName("time")
+        ->setFunction(
+            function () {
+                return 1417011228;
+            }
+        );
+                    
+$mock = $builder->build()
+
+$result = $mock->time();
+```
+
+While we can simply do:
+
+```php
+$functions = new FakeFunctions([
+    'time' => 1417011228
+]);
+
+$result = $functions->time();
+```
+
 
 ## Other testing utilities
 
