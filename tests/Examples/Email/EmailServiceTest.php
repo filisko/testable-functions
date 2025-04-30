@@ -17,12 +17,13 @@ class EmailServiceTest extends TestCase
             'mail' => false,
         ], false);
 
+        // pass it to the constructor
         $service = new EmailService($functions);
 
-        // sendEmail exits in production if it fails
+        // sendEmail exits in production if it fails, meaning: PHP execution has ended
         $service->sendEmail('test@example.com', 'Test', 'Hello');
 
-        // but here, we can assert that exit was called without it actually exiting
+        // ... but here, we can assert that exit was called without it actually exiting
         $this->assertTrue($functions->exited());
         $this->assertEquals(1, $functions->exitCode());
 
