@@ -76,11 +76,9 @@ class FakeFunctions extends Functions
      */
     public function firstArgument(string $function, int $number = 0)
     {
-        if (!isset($this->calls[$function])) {
-            throw new WasNotCalled(sprintf('Function "%s" was not called yet', $function));
-        }
+        $first = $this->first($function);
 
-        return $this->calls[$function][0][$number];
+        return $first[$number];
     }
 
     public function wasCalled(string $function): bool
