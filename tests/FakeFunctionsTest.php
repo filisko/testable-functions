@@ -14,47 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class FakeFunctionsTest extends TestCase
 {
-    public function dataProvider_for_callables(): array
-    {
-        return [
-            [
-                [
-                    'some_function' => function (string $param) {
-                        return $param;
-                    }
-                ],
-                'test'
-            ],
-            [
-                [
-                    'some_function' => function () {
-                        return true;
-                    }
-                ],
-                true
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProvider_for_callables
-     * @param array<string,callable> $input
-     * @param array<string,bool> $expected
-     */
-    public function test_it_supports_callables(array $input, $expected): void
-    {
-        $functions = new FakeFunctions([
-            'some_function' => function (string $param) {
-                return $param;
-            }
-        ]);
-
-        $result = $functions->some_function('test');
-
-        $this->assertEquals($expected, $result);
-    }
-
-    public function test_callables_are_logged(): void
+    public function test_it_supports_callables(): void
     {
         $functions = new FakeFunctions([
             'some_function' => function (string $param) {
@@ -131,7 +91,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertTrue($functions->wasCalled('function_exists'));
     }
 
-    public function test_it_throws_an_exception_when_value_is_needed_but_stack_is_empty(): void
+    public function test_it_throws_an_exception_when_value_is_needed_but_all_the_stack_was_consumed(): void
     {
         $functions = new FakeFunctions([
             'function_exists' => new FakeStack(['one'])
@@ -145,7 +105,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(true, $functions->function_exists('test'));
     }
 
-    public function test_it_throws_an_exception_when_value_is_needed_but_it_was_already_used(): void
+    public function test_it_throws_an_exception_when_value_is_needed_but_it_was_already_consumed(): void
     {
         $functions = new FakeFunctions([
             'function_exists' => false
@@ -161,7 +121,7 @@ class FakeFunctionsTest extends TestCase
         $functions->function_exists('test');
     }
 
-    public function test_it_throws_an_exception_when_callable_is_called_but_it_was_already_used(): void
+    public function test_it_throws_an_exception_when_callable_is_called_but_it_was_already_consumed(): void
     {
         $functions = new FakeFunctions([
             'function_exists' => function ($param) {

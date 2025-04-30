@@ -7,7 +7,7 @@ namespace Filisko;
 use BadMethodCallException;
 use Filisko\FakeStack\EmptyStack;
 use Filisko\FakeStack\NotMockedFunction;
-use Filisko\FakeStack\UsedFunction;
+use Filisko\FakeStack\ConsumedFunction;
 
 /**
  * Used for testing environment.
@@ -82,7 +82,7 @@ class FakeFunctions extends Functions
 
             if ($value instanceof FakeStack) {
                 $pending[$function] = $value->remaining();
-            } elseif ($value instanceof UsedFunction) {
+            } elseif ($value instanceof ConsumedFunction) {
                 $pending[$function] = 0;
             } else {
                 $pending[$function] += 1;
@@ -122,7 +122,7 @@ class FakeFunctions extends Functions
         $fake = $this->functions[$function];
 
         // throw exception for already consumed values
-        if ($fake instanceof UsedFunction) {
+        if ($fake instanceof ConsumedFunction) {
             throw new EmptyStack(sprintf('Function "%s" was already used', $function));
         }
 
@@ -135,14 +135,14 @@ class FakeFunctions extends Functions
         // handle callables
         if (is_callable($fake)) {
             $this->addCall($function, $args);
-            $this->functions[$function] = new UsedFunction();
+            $this->functions[$function] = new ConsumedFunction();
 
             return call_user_func_array($fake, $args);
         }
 
         // handle values
         $this->addCall($function, $args);
-        $this->functions[$function] = new UsedFunction();
+        $this->functions[$function] = new ConsumedFunction();
 
         return $fake;
     }

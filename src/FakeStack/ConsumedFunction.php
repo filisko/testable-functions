@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Filisko\FakeStack;
 
-class UsedFunction
+class ConsumedFunction
 {
 
 }
