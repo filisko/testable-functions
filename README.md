@@ -63,7 +63,7 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 use PHPUnit\Framework\Assert;
 
 $functions = new \Filisko\FakeFunctions([
-    'file_exists' => true,
+    'time' => 1417011228,
     'is_dir' => function(string $path)  {
         // you can assert the parameters here
         Assert::assertEquals('/path/to/dir', $path);
@@ -79,8 +79,8 @@ $this->assertEquals(false, $client->do());
 
 // ----- inside the class under test -----
 
-// returns true
-$functions->file_exists($path);
+// returns 1417011228
+$functions->time();
 
 // returns false
 $functions->is_dir($dirname);
