@@ -1,4 +1,4 @@
-# Fake PHP functions
+x# Fake PHP functions
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
@@ -32,7 +32,7 @@ You can see a basic [example here](tests/Examples/Email) of production code and 
 
 ### Functions class
 
-This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward the function calls to PHP, and it also wraps PHP's language constructs like `require` inside functions. This way, you already abstract yourself from using PHP directly.
+This class is like a proxy to PHP functions. It uses the __call hook internally to forward the function calls to PHP, and it also wraps PHP's language constructs like require inside functions. This way, you already abstract yourself from using PHP directly.
 
 Using this class can be particularly useful for operations that involve IO because later on they can be easily altered for testing purposes:
 
@@ -70,7 +70,7 @@ $functions->is_dir($dirname);
 
 Legacy projects are usually require/include oriented-architectures, so the following can be very handy.
 
-As you've read before, the package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
+As you've seen before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
 ```php
 $functions->require_once($path);
