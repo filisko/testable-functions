@@ -144,7 +144,7 @@ Also keep in mind that all those are to be applied to each single test:
 
 ```php
 /**
- * @runInSeparateProcess This docblock isolates any kind of persistent functionality.
+ * @runInSeparateProcess This docblock isolates any kind of persistent functionality. Use it only when the rest doesn't work.
  */
 public function test_with_globals(): void
 {
