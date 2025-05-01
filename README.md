@@ -101,7 +101,7 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-These can be easily altered too for testing purposes:
+This makes it possible to alter them too for testing purposes:
 
 ```php
 // ---------- inside a PHP Unit test ----------
