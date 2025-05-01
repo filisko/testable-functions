@@ -132,11 +132,11 @@ global $var;
 $functions->include($dirname);
 ```
 
-Keep in mind that loading the following during tests will make the available across all the other tests:
+Keep in mind that loading things like globals will make them available across all the other tests and you may not want this:
 
-- globals (use `@backupGlobals`)
+- globals (`@backupGlobals`)
 - classes or functions (`@runInSeparateProcess`)
-- static variables or properties (use `@backupStaticAttributes)
+- static variables or properties (`@backupStaticAttributes`)
 
 To solve this issue, use PHPUnit's docblocks shown above.
 
