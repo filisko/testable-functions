@@ -152,7 +152,7 @@ public function test_with_globals(): void
 }
 ```
 
-Further more, passing `--process-isolation` to phpunit will apply `@runInSeparateProcess` to each single test globally, but that's not a good practice.
+Further more, passing `--process-isolation` to PHPUnit will globally apply `@runInSeparateProcess` to each single test, but that's not a good practice.
 
 ### FakeFunctions class
 
