@@ -114,7 +114,7 @@ $functions = new \Filisko\FakeFunctions([
         global $var
         $var = 1;
     },
-    // you can also load stuff from a file
+    // you can also load anything (functions, classes, etc.) from a file
     'require' => function() {
         eval(file_get_contents(__DIR__ . '/functions.php'));
     },
