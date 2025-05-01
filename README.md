@@ -215,7 +215,7 @@ $functions->first('filter_var');
 // e.g.: 'argument'
 $functions->first('filter_var')[0];
 
-// returns the first argument of the first function call (throws an exception it wasn't called yet)
+// returns the first argument of the first function call (throws an exception if it wasn't called yet)
 // e.g.: 'argument'
 $functions->firstArgument('filter_var');
 
@@ -228,19 +228,19 @@ $functions->wasEchoed('Was I echoed?');
 // returns a string[] of all the prints
 $functions->prints();
 
-// returns a bool of whether the string was echoed or not
+// returns a bool of whether the string was printed or not
 $functions->wasPrinted('Was I printed?');
 
 // returns a bool of whether die() was called or not
 $functions->died();
 
-// returns the die code or the string that was passed to die($status) when it was called
+// returns the die code or string that was passed to die($status)
 $functions->dieCode();
 
 // returns a bool of whether exit() was called or not
 $functions->exited();
 
-// returns the exit code or the string that was passed to exit($status) when it was called
+// returns the exit code or string that was passed to exit($status)
 $functions->exitCode();
 ```
 
