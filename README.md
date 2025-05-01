@@ -169,15 +169,15 @@ $functions = new \Filisko\FakeFunctions([
     },
 
     // a stack of values that will be used for the next function call
-    // it throws an exception when the stack was already consumed
+    // it throws an exception when the stack is already consumed
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
-// we can adjust if we want to throw an exception when a result for a function was not set,
-// yet the function was called anyway (like an unexpected call)
-// this configuration defaults to false which causes to fallback to native PHP functions
-// when a mock was not set. This is useful so that trim, filter_var, etc.
-// work as usual if they are not mocked (although you could also use the function directly for those cases)
+// We can adjust whether we want to throw an exception when a result for a function is not set,
+// yet the function was called anyway (like an unexpected call).
+// This configuration defaults to false, which causes to fallback to native PHP functions
+// when a mock was not set. This is useful for functions that do not involve IO like: trim, filter_var, etc.
+// so that these work as usual if they are not mocked (although you could also use the function directly for those cases)
 $failOnMissing = true;
 $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 
