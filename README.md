@@ -88,7 +88,7 @@ $functions->is_dir($dirname);
 
 Legacy projects are usually require/include oriented architectures, so the following can be very handy.
 
-As you've seen before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
+As you've read before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
 ```php
 $functions->require_once($path);
