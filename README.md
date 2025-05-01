@@ -169,7 +169,7 @@ $functions = new \Filisko\FakeFunctions([
     },
 
     // a stack of values that will be used for the next function call
-    // it will throw an exception if you trigger a call when the stack was already consumed
+    // it throws an exception when the stack was already consumed
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
