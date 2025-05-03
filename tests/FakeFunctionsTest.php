@@ -278,7 +278,7 @@ class FakeFunctionsTest extends TestCase
 
         $this->assertSame('', $functions->include('file.php'));
     }
-    
+
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled

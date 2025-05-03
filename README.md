@@ -145,13 +145,16 @@ To solve this issue, use PHPUnit's docblocks shown above in each single test:
 
 ```php
 /**
- * @runInSeparateProcess This docblock isolates any kind of persistent functionality. Use it when the others don't work.
+ * @runInSeparateProcess
+ * @preserveGlobalState disabled
  */
 public function test_with_globals(): void
 {
     // ...
 }
 ```
+
+These two docblocks above isolate any kind of persistency across tests. Use it when other solutions don't work and try first with `@runInSeparateProcess` alone.
 
 Further more, passing `--process-isolation` to PHPUnit will globally apply `@runInSeparateProcess` to each single test, but that's not a good practice.
 
