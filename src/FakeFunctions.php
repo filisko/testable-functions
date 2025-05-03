@@ -154,8 +154,12 @@ class FakeFunctions extends Functions
         }
 
         if (!$this->failOnMissing && !isset($this->functions[$function])) {
-            $this->addCall($function, $args);
-            return $function(...$args);
+            if (static::isRequireOrInclude($function)) {
+                return parent::$function(...$args);
+            } else {
+                $this->addCall($function, $args);
+                return $function(...$args);
+            }
         }
 
         $fake = $this->functions[$function];
@@ -194,6 +198,16 @@ class FakeFunctions extends Functions
     public function __call($func, $args)
     {
         return $this->run($func, $args);
+    }
+
+    private static function isRequireOrInclude(string $function): bool
+    {
+        return in_array($function, [
+            'require_once',
+            'require',
+            'include_once',
+            'include',
+        ], true);
     }
 
     /**
