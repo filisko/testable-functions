@@ -42,12 +42,12 @@ Imagine the following production code:
 // this is passed to the constructor of the client class
 $functions = new \Filisko\Functions();
 
-// file related
+// filesystem
 $functions->file_exists($path);
 $functions->is_dir($dirname);
 $functions->is_file($filename);
 
-// network related
+// network
 $functions->checkdnsrr($hostname);
 $functions->fsockopen($hostname);
 
