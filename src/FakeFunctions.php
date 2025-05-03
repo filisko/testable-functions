@@ -154,7 +154,7 @@ class FakeFunctions extends Functions
         }
 
         if (!$this->failOnMissing && !isset($this->functions[$function])) {
-            if (static::isRequireOrInclude($function)) {
+            if (self::isRequireOrInclude($function)) {
                 return parent::$function(...$args);
             } else {
                 $this->addCall($function, $args);
