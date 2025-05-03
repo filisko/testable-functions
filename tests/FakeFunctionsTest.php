@@ -207,11 +207,18 @@ class FakeFunctionsTest extends TestCase
         $this->assertTrue($functions->wasCalled('require_once'));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_require_once_fallback(): void
     {
         $functions = new FakeFunctions();
 
         $this->assertSame(100, $functions->require_once(__DIR__.'/FakeFunctionsTest/file.php'));
+
+        // already loaded
+        $this->assertSame(true, $functions->require_once(__DIR__.'/FakeFunctionsTest/file.php'));
     }
 
     public function test_require(): void
@@ -225,10 +232,15 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('file.php', $functions->require('file.php'));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_require_fallback(): void
     {
         $functions = new FakeFunctions();
 
+        $this->assertSame(100, $functions->require(__DIR__.'/FakeFunctionsTest/file.php'));
         $this->assertSame(100, $functions->require(__DIR__.'/FakeFunctionsTest/file.php'));
     }
 
@@ -241,13 +253,23 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('test', $functions->include_once('file.php'));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_include_once_fallback(): void
     {
         $functions = new FakeFunctions();
 
         $this->assertSame(100, $functions->include_once(__DIR__.'/FakeFunctionsTest/file.php'));
+        // already loaded
+        $this->assertSame(true, $functions->include_once(__DIR__.'/FakeFunctionsTest/file.php'));
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_include(): void
     {
         $functions = new FakeFunctions([
@@ -256,7 +278,11 @@ class FakeFunctionsTest extends TestCase
 
         $this->assertSame('', $functions->include('file.php'));
     }
-
+    
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function test_include_fallback(): void
     {
         $functions = new FakeFunctions();
