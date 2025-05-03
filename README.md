@@ -39,7 +39,7 @@ Using this class can be particularly useful for code that involves IO operations
 Imagine the following production code:
 
 ```php
-// this is passed to the constructor of client class
+// this is passed to the constructor of the client class
 $functions = new \Filisko\Functions();
 
 // file related
@@ -51,9 +51,9 @@ $functions->is_file($filename);
 $functions->checkdnsrr($hostname);
 $functions->fsockopen($hostname);
 
-// etc...
+// clock
 $functions->time();
-$functions->password_verify($password);
+$functions->date_create();
 ```
 
 Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
@@ -64,6 +64,7 @@ use PHPUnit\Framework\Assert;
 
 $functions = new \Filisko\FakeFunctions([
     'time' => 1417011228,
+    'date_create' => new DateTime('2025-05-15'),
     'is_dir' => function(string $path)  {
         // you can assert arguments here
         Assert::assertEquals('/path/to/dir', $path);
@@ -81,6 +82,9 @@ $this->assertEquals(false, $client->do());
 
 // returns 1417011228
 $functions->time();
+
+// returns DateTime('2025-05-15')
+$functions->date_create();
 
 // returns false
 $functions->is_dir($dirname);
