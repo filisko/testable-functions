@@ -39,7 +39,7 @@ Using this class can be particularly useful for code that involves IO operations
 Imagine the following production code:
 
 ```php
-// this should be passed to the constructor of the production class (it just forwards function calls to PHP)
+// this is passed to the constructor of client class
 $functions = new \Filisko\Functions();
 
 // file related
@@ -65,7 +65,7 @@ use PHPUnit\Framework\Assert;
 $functions = new \Filisko\FakeFunctions([
     'time' => 1417011228,
     'is_dir' => function(string $path)  {
-        // you can assert the parameters here
+        // you can assert arguments here
         Assert::assertEquals('/path/to/dir', $path);
 
         return false;
@@ -106,7 +106,6 @@ This makes it possible to alter them too for testing purposes:
 ```php
 // ---------- inside a PHP Unit test ----------
 
-<?php
 $functions = new \Filisko\FakeFunctions([
     // simulating a file loading global vars
     'require_once' => function() {
@@ -138,9 +137,7 @@ Keep in mind that loading things like globals will make them available across al
 - classes or functions (`@runInSeparateProcess`)
 - static variables or properties (`@backupStaticAttributes`)
 
-To solve this issue, use PHPUnit's docblocks shown above.
-
-Also keep in mind that all those are to be applied to each single test:
+To solve this issue, use PHPUnit's docblocks shown above in each single test:
 
 ```php
 /**
@@ -168,7 +165,7 @@ $functions = new \Filisko\FakeFunctions([
         return true;
     },
 
-    // a stack of values that will be used for the next function call
+    // a stack of values that will be used for each function call
     // it throws an exception when the stack is already consumed
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
@@ -184,18 +181,18 @@ $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 // returns a bool of whether a function was called or not
 $functions->wasCalled('require_once');
 
-// returns an int of the number of times a function was called
+// returns an int of the number of times that a function was called
 $functions->wasCalledTimes('require_once');
 
 // returns a list (array<string,int>) of function names together with the pending calls
 // e.g.: [ 'function_exists' => 2 ]  
 $functions->pendingCalls();
 
-// returns an int for the pending calls of a specific function (it will throw an exception for a non-defined function calls)
+// returns an int for the pending calls of a specific function (it will throw an exception for non-defined function calls)
 $functions->pendingCalls('filter_var');
 
-// returns the total of all pending calls
-// (this can be used to assert the all values were consumed by the end of the test)
+// returns the total of all the pending calls
+// (this can be used to assert that all the values were consumed by the end of the test)
 $functions->pendingCallsCount();
 
 // returns an array of all the calls together with the arguments of each call
@@ -219,13 +216,13 @@ $functions->first('filter_var')[0];
 // e.g.: 'argument'
 $functions->firstArgument('filter_var');
 
-// returns a string[] of all the echos
+// returns an array of string[] of all the echos
 $functions->echos();
 
 // returns a bool of whether the string was echoed or not
 $functions->wasEchoed('Was I echoed?');
 
-// returns a string[] of all the prints
+// returns an array of string[] of all the prints
 $functions->prints();
 
 // returns a bool of whether the string was printed or not
