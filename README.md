@@ -36,7 +36,7 @@ This class is like a proxy to PHP functions. It uses the `__call` hook internall
 
 Using this class can be particularly useful for code that involves IO operations because later on, the result of those operations can be easily altered for testing purposes.
 
-Imagine the following code as production code:
+Imagine the following production code:
 
 ```php
 // this should be passed to the constructor of the production class (it just forwards function calls to PHP)
