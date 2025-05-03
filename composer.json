@@ -1,7 +1,7 @@
 {
     "name": "filisko/testable-phpfunctions",
     "type": "library",
-    "description": "Fake PHP functions for integration testing",
+    "description": "A library for testing PHP's built-in functions or language constructs.",
     "license": "MIT",
     "keywords": [
         "php",
