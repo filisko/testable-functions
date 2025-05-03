@@ -4,7 +4,6 @@
 [![Software License][ico-license]](LICENSE)
 ![Testing][ico-tests]
 ![Coverage Status][ico-coverage]
-[![Total Downloads][ico-downloads]][link-downloads]
 
 A library that provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs that are normally really hard to test.
 
@@ -295,5 +294,4 @@ The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 [ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat
 
 [link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
-[link-downloads]: https://packagist.org/packages/filisko/testable-phpfunctions
 
