@@ -10,7 +10,8 @@
         "fake",
         "mock",
         "testing",
-        "testable php functions",
+        "testable",
+        "integration",
         "unit"
     ],
     "homepage": "https://github.com/filisko/testable-phpfunctions",
