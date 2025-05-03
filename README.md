@@ -4,6 +4,7 @@
 [![Software License][ico-license]](LICENSE)
 ![Testing][ico-tests]
 ![Coverage Status][ico-coverage]
+[![Total Downloads][ico-downloads]][link-packagist]
 
 A library that provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs that are normally really hard to test.
 
