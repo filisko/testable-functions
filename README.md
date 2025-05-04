@@ -148,7 +148,7 @@ To solve this issue, use PHPUnit's docblocks shown above per each single test me
  * @runInSeparateProcess
  * @preserveGlobalState disabled
  */
-public function test_with_globals(): void
+public function test_with_functions_loading(): void
 {
     // ...
 }
