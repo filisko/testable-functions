@@ -141,7 +141,7 @@ Keep in mind that loading things like globals will make them available across al
 - classes or functions (`@runInSeparateProcess`, `@preserveGlobalState disabled`)
 - static variables or properties (`@backupStaticAttributes`)
 
-To solve this issue, use PHPUnit's docblocks shown above in each test:
+To solve this issue, use PHPUnit's docblocks shown above per each single test method:
 
 ```php
 /**
@@ -152,6 +152,7 @@ public function test_with_globals(): void
 {
     // ...
 }
+```
 ``
 Furthermore, passing `--process-isolation` to PHPUnit will globally apply `@runInSeparateProcess` to each single test, but that's not a good practice.
 
