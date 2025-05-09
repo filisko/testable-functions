@@ -177,9 +177,9 @@ $functions = new \Filisko\FakeFunctions([
 
 // We can adjust whether we want to throw an exception when a result for a function is not set,
 // yet the function was called anyway (like an unexpected call).
-// This configuration defaults to false, which causes to fallback to native PHP functions
-// when a mock was not set. This is useful for functions that do not involve IO like: trim, filter_var, etc.
-// so that these work as usual if they are not mocked (although you could also use the function directly for those cases)
+// This configuration defaults to false, which causes to fallback to native PHP functions  when a mock was not set.
+// This is useful for functions that do not involve IO like: trim, filter_var, etc.
+// On the other hand, enabling it can be very useful to make sure that only what's expected can be called (e.g.: avoid unexpected DB calls or requests),
 $failOnMissing = true;
 $functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
 
