@@ -63,6 +63,7 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 use PHPUnit\Framework\Assert;
 
 $functions = new \Filisko\FakeFunctions([
+    // if you don't add it here, it will fallback to PHP
     'time' => 1417011228,
     'date_create' => new DateTime('2025-05-15'),
     'is_dir' => function(string $path)  {
@@ -71,7 +72,6 @@ $functions = new \Filisko\FakeFunctions([
 
         return false;
     },
-    // if you don't add it here, it will fallback to PHP
 ]);
 
 $fileManager = new FileManager($functions);
