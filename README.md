@@ -71,7 +71,7 @@ $functions = new \Filisko\FakeFunctions([
 
         return false;
     },
-    // ...
+    // if you don't add it here, it will fallback to PHP
 ]);
 
 $fileManager = new FileManager($functions);
