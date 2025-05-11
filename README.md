@@ -59,7 +59,7 @@ $functions->date_create();
 Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
 
 ```php
-// ----- inside the PHPUnit test ------
+// ----- inside the PHPUnit test case -----
 use PHPUnit\Framework\Assert;
 
 $functions = new \Filisko\FakeFunctions([
@@ -78,7 +78,7 @@ $fileManager = new FileManager($functions);
 
 $this->assertEquals(false, $client->do());
 
-// ----- inside the class under test -----
+// ------- inside the class under test -------
 
 // returns 1417011228
 $functions->time();
