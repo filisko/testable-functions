@@ -59,7 +59,7 @@ $functions->date_create();
 Then, by using the `FakeFuctions` class in the testing environment, the results of the functions can be easily altered like this:
 
 ```php
-// ----- inside a PHP Unit test ------
+// ----- inside the PHPUnit test ------
 use PHPUnit\Framework\Assert;
 
 $functions = new \Filisko\FakeFunctions([
