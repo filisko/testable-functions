@@ -8,7 +8,7 @@
 
 A library that provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs that are normally really hard to test. There are no excuses for not testing PHP functions anymore!
 
-That's why it's great for include/require-oriented architectures, such as legacy projects.
+Supporting PHP language constructs is great for include/require-oriented architectures, such as legacy projects.
 
 ## Requirements
 
