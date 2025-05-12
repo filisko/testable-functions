@@ -12,7 +12,7 @@ There are no excuses for not testing PHP functions anymore!
 
 ## Requirements
 
-* PHP >= 7.2
+* PHP >= 7.1
 
 ## Installation
 
