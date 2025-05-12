@@ -7,7 +7,7 @@ namespace Filisko\Tests;
 use BadMethodCallException;
 use Filisko\FakeFunctions;
 use Filisko\FakeStack;
-use Filisko\FakeStack\EmptyStack;
+use Filisko\FakeStack\StackConsumed;
 use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\WasNotCalled;
 use PHPUnit\Framework\TestCase;
@@ -35,6 +35,30 @@ class FakeFunctionsTest extends TestCase
         ], $functions->calls());
 
         $this->assertTrue($functions->wasCalled('some_function'));
+    }
+
+    public function test_static_callables_are_used_multiple_times(): void
+    {
+        $counter = 0;
+
+        $functions = new FakeFunctions([
+            'increase' => static function () use(&$counter) {
+                $counter++;
+            }
+        ]);
+
+        $this->assertEquals(0, $counter);
+
+        $functions->increase();
+        $this->assertEquals(1, $counter);
+
+        $functions->increase();
+        $this->assertEquals(2, $counter);
+
+        $functions->increase();
+        $this->assertEquals(3, $counter);
+
+        $this->assertSame(3, $functions->wasCalledTimes('increase'));
     }
 
     public function test_it_supports_values_directly(): void
@@ -101,7 +125,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('one', $functions->function_exists('test'));
 
         // second execution requires a value but the stack is empty
-        $this->expectException(EmptyStack::class);
+        $this->expectException(StackConsumed::class);
         $this->assertSame(true, $functions->function_exists('test'));
     }
 
@@ -115,8 +139,8 @@ class FakeFunctionsTest extends TestCase
         $this->assertEquals(false, $functions->function_exists('test'));
 
         // second execution
-        $this->expectException(EmptyStack::class);
-        $this->expectExceptionMessage('Function "function_exists" was already used');
+        $this->expectException(StackConsumed::class);
+        $this->expectExceptionMessage('Mocked result of "function_exists" was already consumed');
 
         $functions->function_exists('test');
     }
@@ -133,8 +157,24 @@ class FakeFunctionsTest extends TestCase
         $this->assertEquals('test', $functions->function_exists('test'));
 
         // second execution
-        $this->expectException(EmptyStack::class);
-        $this->expectExceptionMessage('Function "function_exists" was already used');
+        $this->expectException(StackConsumed::class);
+        $this->expectExceptionMessage('Mocked result of "function_exists" was already consumed');
+
+        $functions->function_exists('test');
+    }
+
+    public function test_it_throws_an_exception_when_a_function_is_called_but_the_stack_was_already_consumed(): void
+    {
+        $functions = new FakeFunctions([
+            'function_exists' => new FakeStack([true])
+        ]);
+
+        // first execution
+        $this->assertEquals('test', $functions->function_exists('test'));
+
+        // second execution
+        $this->expectException(StackConsumed::class);
+        $this->expectExceptionMessage('Stack of "function_exists" function was already consumed');
 
         $functions->function_exists('test');
     }
@@ -459,7 +499,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(0, $functions->pendingCalls('value'));
         $this->assertSame(0, $functions->pendingCalls('callable'));
 
-        $this->expectException(EmptyStack::class);;
+        $this->expectException(StackConsumed::class);;
         $functions->some_function();
     }
 
@@ -468,7 +508,7 @@ class FakeFunctionsTest extends TestCase
         $functions = new FakeFunctions();
 
         $this->expectException(NotMockedFunction::class);
-        $this->expectExceptionMessage('Function "some_function" was not mocked but calls were requested');
+        $this->expectExceptionMessage('Function "some_function" was not mocked a call was triggered');
 
         $functions->pendingCalls('some_function');
     }

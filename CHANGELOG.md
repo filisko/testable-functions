@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - Unreleased
+
+### Added
+
+- Support for static callables for mocking results.
+
+### Changed
+
+- Improved verbosity of error messages when the stack was already consumed to include stack's associated function name.
+
 ## [1.1.0] - 2025-05-12
 
 ### Added
@@ -15,5 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 First release.
 
+[1.2.0]: https://github.com/filisko/testable-phpfunctions/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/filisko/testable-phpfunctions/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/filisko/testable-phpfunctions/releases/tag/v1.0.0

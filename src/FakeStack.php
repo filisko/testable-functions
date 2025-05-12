@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Filisko;
 
-use Filisko\FakeStack\EmptyStack;
+use Filisko\FakeStack\StackConsumed;
 
 class FakeStack
 {
@@ -18,13 +18,14 @@ class FakeStack
     /**
      * Gives the next value and removes it from the stack.
      *
+     * @param string $function Only used to improve the error message.
      * @return mixed
-     *@throws EmptyStack
+     * @throws StackConsumed
      */
-    public function value($args)
+    public function value(string $function, $args)
     {
         if (count($this->fakes) === 0) {
-            throw new EmptyStack('Stack is empty');
+            throw new StackConsumed(sprintf('Stack of "%s" function was already consumed', $function));
         }
 
         $result = array_shift($this->fakes);

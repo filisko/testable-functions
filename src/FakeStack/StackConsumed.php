@@ -6,6 +6,6 @@ namespace Filisko\FakeStack;
 
 use Exception;
 
-class EmptyStack extends Exception
+class StackConsumed extends Exception
 {
 }

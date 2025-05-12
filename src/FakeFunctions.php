@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Filisko;
 
 use BadMethodCallException;
-use Filisko\FakeStack\EmptyStack;
+use Closure;
+use Filisko\FakeStack\StackConsumed;
 use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\ConsumedFunction;
 use Filisko\FakeStack\WasNotCalled;
+use ReflectionFunction;
 
 /**
  * Used for testing environment.
@@ -122,7 +124,7 @@ class FakeFunctions extends Functions
 
         if ($requestedFunction) {
             if ($pending === []) {
-                throw new NotMockedFunction(sprintf('Function "%s" was not mocked but calls were requested', $requestedFunction));
+                throw new NotMockedFunction(sprintf('Function "%s" was not mocked a call was triggered', $requestedFunction));
             } else {
                 return $pending[$requestedFunction];
             }
@@ -144,7 +146,7 @@ class FakeFunctions extends Functions
 
     /**
      * @return mixed
-     * @throws EmptyStack
+     * @throws StackConsumed
      * @throws NotMockedFunction
      */
     protected function run($function, $args)
@@ -166,19 +168,22 @@ class FakeFunctions extends Functions
 
         // throw exception for already consumed values
         if ($fake instanceof ConsumedFunction) {
-            throw new EmptyStack(sprintf('Function "%s" was already used', $function));
+            throw new StackConsumed(sprintf('Mocked result of "%s" was already consumed', $function));
         }
 
         // handle stacks
         if ($fake instanceof FakeStack) {
             $this->addCall($function, $args);
-            return $fake->value($args);
+            return $fake->value($function, $args);
         }
 
         // handle callables
         if (is_callable($fake)) {
             $this->addCall($function, $args);
-            $this->functions[$function] = new ConsumedFunction();
+
+            if (!self::isStaticClosure($fake)) {
+                $this->functions[$function] = new ConsumedFunction();
+            }
 
             return call_user_func_array($fake, $args);
         }
@@ -188,6 +193,17 @@ class FakeFunctions extends Functions
         $this->functions[$function] = new ConsumedFunction();
 
         return $fake;
+    }
+
+    /**
+     * Check if a closure is static
+     *
+     * @param Closure $closure The closure to check
+     */
+    private static function isStaticClosure(Closure $closure): bool
+    {
+        $reflection = new ReflectionFunction($closure);
+        return $reflection->isStatic();
     }
 
     /**
