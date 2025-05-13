@@ -168,7 +168,7 @@ class FakeFunctions extends Functions
 
         // throw exception for already consumed values
         if ($fake instanceof ConsumedFunction) {
-            throw new StackConsumed(sprintf('Mocked result of "%s" was already consumed', $function));
+            throw new StackConsumed(sprintf('Mocked result of "%s" function was already consumed', $function));
         }
 
         // handle stacks
@@ -177,33 +177,38 @@ class FakeFunctions extends Functions
             return $fake->value($function, $args);
         }
 
-        // handle callables
-        if (is_callable($fake)) {
+        // handle static stacks
+        if ($fake instanceof FakeStatic) {
             $this->addCall($function, $args);
 
-            if (!self::isStaticClosure($fake)) {
-                $this->functions[$function] = new ConsumedFunction();
+            $staticValue = $fake->value();
+            if (is_callable($staticValue)) {
+                return $staticValue(...$args);
             }
+
+            return $staticValue;
+        }
+
+        // handle fallbacks
+        if ($fake instanceof FakeFallback) {
+            $this->addCall($function, $args);
+
+            return call_user_func_array($function, $args);
+        }
+
+        // handle one-time callables
+        if (is_callable($fake)) {
+            $this->addCall($function, $args);
+            $this->functions[$function] = new ConsumedFunction();
 
             return call_user_func_array($fake, $args);
         }
 
-        // handle values
+        // handle one-time values
         $this->addCall($function, $args);
         $this->functions[$function] = new ConsumedFunction();
 
         return $fake;
-    }
-
-    /**
-     * Check if a closure is static
-     *
-     * @param Closure $closure The closure to check
-     */
-    private static function isStaticClosure(Closure $closure): bool
-    {
-        $reflection = new ReflectionFunction($closure);
-        return $reflection->isStatic();
     }
 
     /**

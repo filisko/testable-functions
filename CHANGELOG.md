@@ -9,7 +9,64 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Support for static callables for mocking results.
+**New testing helpers**:
+  - `$functions->wasRequired($path)`
+  - `$functions->wasRequiredOnce($path)`
+  - `$functions->wasIncluded($path)`
+  - `$functions->wasIncludedOnce($path)`
+  - `$functions->errorWasTriggered($message)`
+
+**Support for allowing functions to fallback to their native implementation while using `$failOnMissing=true`.**
+
+Before:
+```php
+$functions = new FakeFunctions([
+    'socket_create' => fn() => socket_create(...func_get_args()),
+], true); // fail when a mock is missing, but a call was made
+```
+
+After:
+```php
+$functions = new FakeFunctions([
+    'socket_create' => new FakeFallback
+], true);
+
+// this is also possible if you want to make the fallback more explicit
+$functions = new FakeFunctions([
+    'socket_create' => new FakeFallback
+]);
+```
+
+**Support for static values and callables (FakeStatic) for retrieving the same result multiple times.**
+
+A value that can be used multiple times:
+```php
+$functions = new FakeFunctions([
+    'value' => new FakeStatic(true)
+]);
+
+// this will always return 'true'
+$functions->value();
+$functions->value();
+$functions->value();
+```
+
+A function that can be called multiple times:
+```php
+$counter = 3;
+$functions = new FakeFunctions([
+    'increase' => new FakeStatic(function () use(&$counter) {
+        $counter++;
+    })
+]);
+
+// this can be called
+$functions->increase();
+$functions->increase();
+$functions->increase();
+
+$this->assertSame(3, $counter);
+```
 
 ### Changed
 

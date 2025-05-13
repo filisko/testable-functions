@@ -8,11 +8,11 @@ use Filisko\FakeStack\StackConsumed;
 
 class FakeStack
 {
-    private $fakes;
+    private $mocks;
 
     public function __construct(array $fakes)
     {
-        $this->fakes = $fakes;
+        $this->mocks = $fakes;
     }
 
     /**
@@ -24,11 +24,11 @@ class FakeStack
      */
     public function value(string $function, $args)
     {
-        if (count($this->fakes) === 0) {
+        if (count($this->mocks) === 0) {
             throw new StackConsumed(sprintf('Stack of "%s" function was already consumed', $function));
         }
 
-        $result = array_shift($this->fakes);
+        $result = array_shift($this->mocks);
 
         if (is_callable($result)) {
             return call_user_func_array($result, $args);
@@ -42,6 +42,6 @@ class FakeStack
      */
     public function remaining(): int
     {
-        return count($this->fakes);
+        return count($this->mocks);
     }
 }

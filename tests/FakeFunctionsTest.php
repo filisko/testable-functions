@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Filisko\Tests;
 
 use BadMethodCallException;
+use Filisko\FakeFallback;
 use Filisko\FakeFunctions;
 use Filisko\FakeStack;
 use Filisko\FakeStack\StackConsumed;
 use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\WasNotCalled;
+use Filisko\FakeStatic;
 use PHPUnit\Framework\TestCase;
 
 class FakeFunctionsTest extends TestCase
@@ -27,7 +29,6 @@ class FakeFunctionsTest extends TestCase
         $this->assertEquals('test', $result);
 
         // callable values are logged
-        // src/FakeFunctions.php:93
         $this->assertEquals([
             'some_function' => [
                 ['test'],
@@ -35,30 +36,6 @@ class FakeFunctionsTest extends TestCase
         ], $functions->calls());
 
         $this->assertTrue($functions->wasCalled('some_function'));
-    }
-
-    public function test_static_callables_are_used_multiple_times(): void
-    {
-        $counter = 0;
-
-        $functions = new FakeFunctions([
-            'increase' => static function () use(&$counter) {
-                $counter++;
-            }
-        ]);
-
-        $this->assertEquals(0, $counter);
-
-        $functions->increase();
-        $this->assertEquals(1, $counter);
-
-        $functions->increase();
-        $this->assertEquals(2, $counter);
-
-        $functions->increase();
-        $this->assertEquals(3, $counter);
-
-        $this->assertSame(3, $functions->wasCalledTimes('increase'));
     }
 
     public function test_it_supports_values_directly(): void
@@ -72,7 +49,6 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame(true, $result);
 
         // values are logged
-        // src/FakeFunctions.php:102
         $this->assertEquals([
             'function_exists' => [
                 ['test'],
@@ -103,7 +79,6 @@ class FakeFunctionsTest extends TestCase
 
         $this->assertSame(true, $functions->function_exists());
         // functions using stacks are logged
-        // src/FakeFunctions.php:98
         $this->assertEquals([
             'function_exists' => [
                 [],
@@ -140,7 +115,7 @@ class FakeFunctionsTest extends TestCase
 
         // second execution
         $this->expectException(StackConsumed::class);
-        $this->expectExceptionMessage('Mocked result of "function_exists" was already consumed');
+        $this->expectExceptionMessage('Mocked result of "function_exists" function was already consumed');
 
         $functions->function_exists('test');
     }
@@ -158,7 +133,7 @@ class FakeFunctionsTest extends TestCase
 
         // second execution
         $this->expectException(StackConsumed::class);
-        $this->expectExceptionMessage('Mocked result of "function_exists" was already consumed');
+        $this->expectExceptionMessage('Mocked result of "function_exists" function was already consumed');
 
         $functions->function_exists('test');
     }
@@ -179,6 +154,54 @@ class FakeFunctionsTest extends TestCase
         $functions->function_exists('test');
     }
 
+    public function test_static_fakes_values_can_be_used_multiple_times(): void
+    {
+        $functions = new FakeFunctions([
+            'extract' => new FakeStatic(1)
+        ]);
+
+        $this->assertSame(1, $functions->extract());
+        $this->assertSame(1, $functions->extract());
+        $this->assertSame(1, $functions->extract());
+
+        $this->assertSame(3, $functions->wasCalledTimes('extract'));
+    }
+
+    public function test_static_fakes_callables_can_be_called_multiple_times(): void
+    {
+        $counter = 0;
+
+        $functions = new FakeFunctions([
+            'increase' => new FakeStatic(function () use(&$counter) {
+                $counter++;
+            })
+        ]);
+
+        $this->assertSame(0, $counter);
+
+        $functions->increase();
+        $this->assertSame(1, $counter);
+
+        $functions->increase();
+        $this->assertSame(2, $counter);
+
+        $functions->increase();
+        $this->assertSame(3, $counter);
+
+        $this->assertSame(3, $functions->wasCalledTimes('increase'));
+    }
+
+    public function test_static_fakes_callables_support_arguments(): void
+    {
+        $functions = new FakeFunctions([
+            'increase' => new FakeStatic(function (string $argument1, int $argument2) {
+                return [$argument1, $argument2];
+            })
+        ]);
+
+        $this->assertEquals(['1', 1], $functions->increase('1', 1));
+    }
+
     public function test_it_throws_an_exception_when_result_for_function_is_not_set_and_failOnMissing_is_set(): void
     {
         $functions = new FakeFunctions([], true);
@@ -190,7 +213,7 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('test', $result);
     }
 
-    public function test_it_delegates_to_php_when_result_for_function_is_not_set_and_failOnMissing_is_default(): void
+    public function test_it_delegates_to_php_when_result_for_function_is_not_set_and_failOnMissing_is_disabled(): void
     {
         $functions = new FakeFunctions();
 
@@ -199,7 +222,6 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('test', $result);
 
         // native functions are logged
-        // src/FakeFunctions.php:86
         $this->assertEquals([
             'trim' => [
                 ['       test       '],
@@ -207,6 +229,21 @@ class FakeFunctionsTest extends TestCase
         ], $functions->calls());
 
         $this->assertTrue($functions->wasCalled('trim'));
+    }
+
+    public function test_fake_fallback_forwards_the_call_to_php(): void
+    {
+        // with failOnMissing disabled it also works
+        $functions = new FakeFunctions([
+            'trim' => new FakeFallback,
+        ]);
+        $this->assertSame('test', $functions->trim('       test       '));
+
+        $functions = new FakeFunctions([
+            'trim' => new FakeFallback,
+        ], true);
+
+        $this->assertSame('test2', $functions->trim('       test2       '));
     }
 
     /**
