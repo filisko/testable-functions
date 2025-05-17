@@ -28,7 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Filisko\\": "src/"
+            "FilisFiliskoko\\": "src/"
         }
     },
     "autoload-dev": {
@@ -39,7 +39,6 @@
     "scripts": {
         "phpstan": "phpstan analyse",
         "test": "phpunit",
-        "coverage": "XDEBUG_MODE=coverage phpunit",
-        "coverage-html": "XDEBUG_MODE=coverage phpunit --coverage-html=build/html"
+        "coverage": "phpunit --coverage-html=build/html"
     }
 }

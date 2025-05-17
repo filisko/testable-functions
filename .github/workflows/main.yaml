@@ -68,12 +68,7 @@ jobs:
               run: composer install --prefer-dist --no-progress
 
             - name: Tests
-              if: matrix.php != '8.4'
               run: composer test
-
-            - name: Test with coverage
-              if: matrix.php == '8.4'
-              run: composer coverage
 
             - name: Coveralls GitHub Action
               if: matrix.php == '8.4'
