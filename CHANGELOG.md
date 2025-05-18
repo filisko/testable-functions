@@ -82,6 +82,6 @@ $this->assertSame(3, $counter);
 
 First release.
 
-[1.2.0]: https://github.com/filisko/testable-phpfunctions/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/filisko/testable-phpfunctions/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/filisko/testable-phpfunctions/releases/tag/v1.0.0
+[1.2.0]: https://github.com/filisko/testable-functions/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/filisko/testable-functions/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/filisko/testable-functions/releases/tag/v1.0.0

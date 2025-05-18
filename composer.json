@@ -1,5 +1,5 @@
 {
-    "name": "filisko/testable-phpfunctions",
+    "name": "filisko/testable-functions",
     "type": "library",
     "description": "A library for testing PHP's built-in functions or language constructs.",
     "license": "MIT",
@@ -14,9 +14,9 @@
         "integration",
         "unit"
     ],
-    "homepage": "https://github.com/filisko/testable-phpfunctions",
+    "homepage": "https://github.com/filisko/testable-functions",
     "support": {
-        "issues": "https://github.com/filisko/testable-phpfunctions/issues"
+        "issues": "https://github.com/filisko/testable-functions/issues"
     },
     "require": {
         "php": ">=7.1"

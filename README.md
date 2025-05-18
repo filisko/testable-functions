@@ -16,10 +16,10 @@ There are no excuses for not testing PHP functions anymore!
 
 ## Installation
 
-This package is installable and autoloadable via Composer as [filisko/testable-phpfunctions](https://packagist.org/packages/filisko/testable-phpfunctions).
+This package is installable and autoloadable via Composer as [filisko/testable-functions](https://packagist.org/packages/filisko/testable-functions).
 
 ```sh
-composer require filisko/testable-phpfunctions
+composer require filisko/testable-functions
 ```
 
 ## Usage
@@ -293,11 +293,11 @@ Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes a
 
 The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/filisko/testable-phpfunctions.svg?style=flat
+[ico-version]: https://img.shields.io/packagist/v/filisko/testable-functions.svg?style=flat
 [ico-license]: https://img.shields.io/badge/license-MIT-informational.svg?style=flat
-[ico-tests]: https://github.com/filisko/testable-phpfunctions/workflows/testing/badge.svg
-[ico-coverage]: https://coveralls.io/repos/github/filisko/testable-phpfunctions/badge.svg?branch=main
-[ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-phpfunctions.svg?style=flat
+[ico-tests]: https://github.com/filisko/testable-functions/workflows/testing/badge.svg
+[ico-coverage]: https://coveralls.io/repos/github/filisko/testable-functions/badge.svg?branch=main
+[ico-downloads]: https://img.shields.io/packagist/dt/filisko/testable-functions.svg?style=flat
 
-[link-packagist]: https://packagist.org/packages/filisko/testable-phpfunctions
+[link-packagist]: https://packagist.org/packages/filisko/testable-functions
 
