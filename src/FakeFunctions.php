@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Filisko;
 
 use BadMethodCallException;
-use Closure;
-use Filisko\FakeStack\StackConsumed;
-use Filisko\FakeStack\NotMockedFunction;
 use Filisko\FakeStack\ConsumedFunction;
+use Filisko\FakeStack\NotMockedFunction;
+use Filisko\FakeStack\StackConsumed;
 use Filisko\FakeStack\WasNotCalled;
-use ReflectionFunction;
 
 /**
  * Used for testing environment.
@@ -95,6 +93,42 @@ class FakeFunctions extends Functions
         }
 
         return count($this->calls[$function]);
+    }
+
+    public function wasRequired(string $file): bool
+    {
+        return $this->wasRequiredOrIncluded('require', $file);
+    }
+
+    public function wasRequiredOnce(string $file): bool
+    {
+        return $this->wasRequiredOrIncluded('require_once', $file);
+    }
+
+    public function wasIncluded(string $file): bool
+    {
+        return $this->wasRequiredOrIncluded('include', $file);
+    }
+
+    public function wasIncludedOnce(string $file): bool
+    {
+        return $this->wasRequiredOrIncluded('include_once', $file);
+    }
+
+    /**
+     * Helper for require, require_once, include, include_once.
+     */
+    private function wasRequiredOrIncluded(string $function, string $file): bool
+    {
+        if (!isset($this->calls[$function])) {
+            return false;
+        }
+
+        $calls = array_filter($this->calls[$function], function ($actualFile) use ($file) {
+            return $actualFile[0] === $file;
+        });
+
+        return count($calls) > 0;
     }
 
     /**

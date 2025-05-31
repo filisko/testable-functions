@@ -471,6 +471,66 @@ class FakeFunctionsTest extends TestCase
         $this->assertTrue($functions->wasCalled('print'));
     }
 
+    public function test_wasRequired(): void
+    {
+        $functions = new FakeFunctions([
+            'require' => true
+        ]);
+
+        $this->assertFalse($functions->wasRequired('require.php'));
+
+        $functions->require("require.php");
+        $this->assertTrue($functions->wasRequired('require.php'));
+    }
+
+    public function test_wasRequiredOnce(): void
+    {
+        $functions = new FakeFunctions([
+            'require_once' => true
+        ]);
+
+        $this->assertFalse($functions->wasRequiredOnce('require_once.php'));
+
+        $functions->require_once("require_once.php");
+        $this->assertTrue($functions->wasRequiredOnce('require_once.php'));
+    }
+
+    public function test_wasIncluded(): void
+    {
+        $functions = new FakeFunctions([
+            'include' => true
+        ]);
+
+        $this->assertFalse($functions->wasIncluded('include.php'));
+
+        $functions->include("include.php");
+        $this->assertTrue($functions->wasIncluded('include.php'));
+    }
+
+    public function test_wasIncludedOnce(): void
+    {
+        $functions = new FakeFunctions([
+            'include_once' => true
+        ]);
+
+        $this->assertFalse($functions->wasIncludedOnce('include_once.php'));
+
+        $functions->include_once("include_once.php");
+        $this->assertTrue($functions->wasIncludedOnce('include_once.php'));
+    }
+
+    public function test_errorWasTriggered(): void
+    {
+        $functions = new FakeFunctions([
+            'include_once' => true
+        ]);
+
+        $this->assertFalse($functions->wasIncludedOnce('include_once.php'));
+
+        $functions->include_once("include_once.php");
+        $this->assertTrue($functions->wasIncludedOnce('include_once.php'));
+    }
+
     public function test_pending_calls(): void
     {
         $functions = new FakeFunctions([
