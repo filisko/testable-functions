@@ -244,6 +244,18 @@ $functions->exited();
 
 // returns the exit code or string that was passed to exit($status)
 $functions->exitCode();
+
+// returns a bool of whether a file was included or not
+$functions->wasIncluded('file.php');
+
+// returns a bool of whether a file was included once or not
+$functions->wasIncludedOnce('file.php');
+
+// returns a bool of whether a file was required or not
+$functions->wasRequired('file.php');
+
+// returns a bool of whether a file was required once or not
+$functions->wasRequiredOnce('file.php');
 ```
 
 ## Why to use this package?
