@@ -390,7 +390,6 @@ class FakeFunctionsTest extends TestCase
         $functions->exit(1);
     }
 
-
     public function test_dieCode_throws_exception(): void
     {
         $functions = new FakeFunctions();
