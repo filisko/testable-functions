@@ -172,7 +172,7 @@ $functions = new \Filisko\FakeFunctions([
     
     // this will return the same result no matter how many times it's called
     'some_function' => new FakeStatic($mixed),
-
+   
     // a stack of values that will be used for each function call
     // it throws an exception when the stack is already consumed
     'some_function' => new FakeStack([true, false, 1, 2]),
@@ -182,9 +182,16 @@ $functions = new \Filisko\FakeFunctions([
 // yet the function was called anyway (like an unexpected call).
 // This configuration defaults to false, which causes a fallback to PHP's native functions when a mock was not set.
 // On the other hand, enabling it can be very useful to make sure that only expected calls are made.
-// (e.g.: avoid unexpected DB calls in legacy code)
+// (e.g.: avoid unexpected DB calls in legacy code or external HTTP requests)
 $failOnMissing = true;
-$functions = new \Filisko\FakeFunctions($mocks, $failOnMissing);
+$functions = new \Filisko\FakeFunctions([
+    // this is used to fallback to the native implementation
+    // even though $failOnMissing is enabled (it will fail otherwise)
+    'mail' => new FakeFallback(),
+    
+    // if a call is made and not mocked here, it will fail
+    'other_function' => true
+], $failOnMissing);
 
 // returns a bool of whether a function was called or not
 $functions->wasCalled('require_once');
