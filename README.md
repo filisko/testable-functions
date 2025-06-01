@@ -169,6 +169,9 @@ $functions = new \Filisko\FakeFunctions([
     'some_function' => function() {
         return true;
     },
+    
+    // this will return the same result no matter how many times it's called
+    'some_function' => new FakeStatic($mixed),
 
     // a stack of values that will be used for each function call
     // it throws an exception when the stack is already consumed
