@@ -311,7 +311,7 @@ $result = $functions->time();
 
 For some, this is a con; for us, it's simply how it should be. We follow the DI principle for almost everything, so why not for this?
 
-What we usually do and consider a good practice is to always set the `Functions` dependency as the last one and set a default so that nothing needs to be passed to the constructor on production. Only when testing.
+In any case, we consider a good practice to always set the `Functions` dependency as the last one so that it doesn't get in our way and also set it as default so that nothing needs to be passed to the constructor on production. Only when testing.
 
 ```php
 class Filesystem
