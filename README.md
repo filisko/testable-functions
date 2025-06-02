@@ -62,7 +62,8 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 // ----- inside the PHPUnit test case -----
 use PHPUnit\Framework\Assert;
 
-// this is the default value, and it means that undefined functions will fall back to their implementation
+// this is the default value, and it means that
+// undefined functions will fall back to their implementation
 $failOnMissing = false;
 
 $functions = new \Filisko\FakeFunctions([
