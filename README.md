@@ -6,7 +6,7 @@
 ![Coverage Status][ico-coverage]
 [![Total Downloads][ico-downloads]][link-packagist]
 
-A library that provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs (great for include/require-oriented architectures such as legacy projects) that are normally really hard to test. 
+A library that provides an approach for testing code that heavily relies on PHP's built-in functions or language constructs (great for "include/require-oriented architectures", such as legacy projects) that are normally really hard to test. 
 
 There are no excuses for not testing PHP functions anymore!
 
@@ -28,13 +28,13 @@ The package provides two main classes: `Functions` used in production and `FakeF
 
 These two classes allow you to use PHP's built-in functions and language constructs (require_once, include, echo, print, etc.) without having to worry about tests.
 
-You can see a basic [example here](tests/Examples/Email) of production code and its tests along with many comments to make the example clearer.
+You can see a basic [example here](tests/Examples/Email) of production code and its tests, along with many comments to make the example clearer.
 
 ### Functions class
 
-This class is like a proxy to PHP functions. It uses the `__call` hook internally to forward function calls to PHP, and it also wraps PHP's language constructs like `require_once` inside functions.
+This class is like a proxy for PHP functions. It uses the `__call` hook internally to forward function calls to PHP, and it also wraps PHP's language constructs like `require_once` inside functions so that they can be testable.
 
-Using this class can be particularly useful for code that involves IO operations because later on, the result of those operations can be easily altered for testing purposes.
+Using this class can be particularly useful for code that involves I/O operations because the results of those operations can be easily altered for testing purposes later on.
 
 Imagine the following production code:
 
@@ -62,6 +62,9 @@ Then, by using the `FakeFuctions` class in the testing environment, the results 
 // ----- inside the PHPUnit test case -----
 use PHPUnit\Framework\Assert;
 
+// this is the default value, and it means that undefined functions will fall back to their implementation
+$failOnMissing = false;
+
 $functions = new \Filisko\FakeFunctions([
     // if you don't add it here, it will fallback to PHP
     'time' => 1417011228,
@@ -72,7 +75,7 @@ $functions = new \Filisko\FakeFunctions([
 
         return false;
     },
-]);
+], $failOnMissing);
 
 $fileManager = new FileManager($functions);
 
