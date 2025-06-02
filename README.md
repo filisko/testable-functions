@@ -94,7 +94,7 @@ $functions->date_create();
 $functions->is_dir($dirname);
 ```
 
-Legacy projects are usually require/include oriented architectures, so the following can be very handy.
+Legacy projects are usually "require/include oriented architectures", so the following can be very handy.
 
 As you've read before, this package supports PHP language constructs (parsed differently than functions by PHP) wrapped in functions:
 
@@ -109,7 +109,7 @@ $functions->exit($statusOrText);
 $functions->die($statusOrText);
 ```
 
-This makes it possible to alter them too for testing purposes:
+This makes it possible to alter them for testing purposes:
 
 ```php
 // ---------- inside a PHP Unit test ----------
