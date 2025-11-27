@@ -658,11 +658,11 @@ class FakeFunctionsTest extends TestCase
         $this->assertSame('second argument', $functions->firstArgument('trim', 1));
     }
 
-    public function test_add(): void
+    public function test_set_function_and_preset_results(): void
     {
         $functions = new FakeFunctions();
 
-        $add = $functions->add('mt_rand', new FakeStack([1, 5]));
+        $add = $functions->set('mt_rand', new FakeStack([1, 5]));
         $this->assertInstanceOf(FakeFunctions::class, $add);
 
         $this->assertSame(1, $functions->mt_rand(1, 5));
