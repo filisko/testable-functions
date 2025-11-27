@@ -182,6 +182,12 @@ $functions = new \Filisko\FakeFunctions([
     'some_function' => new FakeStack([true, false, 1, 2]),
 ]);
 
+// it's also possible to preset the values using the set() method,
+// this allows you to postpone the setting of a function's preset result until it is needed.
+$functions->set('some_function', true);
+$functions->set('some_function', new FakeStatic($mixed));
+$functions->set('some_function', new FakeStack([true, false, 1, 2]));
+
 // We can adjust whether we want to throw an exception when a result for a function is not set,
 // yet the function was called anyway (like an unexpected call).
 // This configuration defaults to false, which causes a fallback to PHP's native functions when a mock was not set.
@@ -234,6 +240,18 @@ $functions->first('filter_var')[0];
 // returns the first argument of the first function call (throws an exception if it wasn't called yet)
 // e.g.: 'argument'
 $functions->firstArgument('filter_var');
+
+// returns the list of returned results of a 'real function call' (a function that actually run != mocked value)
+// it won't return the result of mocked/preset function results or language constructs like require, echo, etc.
+// e.g.: ['fecbada3-0c27-47ce-addf-f840050ee204', '...']
+$functions->results('uuid');
+$functions->results('uuid')[0];
+
+// the same as results() but it only returns the last result of the function call
+// this is useful when you want to avoid hardcoding a result just so that you have control over it.
+// this way, you let the code run and only get the result of the function to do something more with it (e.g.: an ID) 
+// e.g.: 'fecbada3-0c27-47ce-addf-f840050ee204'
+$functions->lastResult('uuid');
 
 // returns an array of string[] of all the echos
 $functions->echos();
@@ -311,7 +329,7 @@ $result = $functions->time();
 
 For some, this is a con; for us, it's simply how it should be. We follow the DI principle for almost everything, so why not for this?
 
-In any case, we consider a good practice to always set the `Functions` dependency as the last one so that it doesn't get in our way and also set it as default so that nothing needs to be passed to the constructor on production. Only when testing.
+In any case, we consider a good practice to always set the `Functions` dependency in the constructor as the last one, so that "it doesn't get in our way" and also set it as default so that nothing needs to be passed to the constructor on production. Only when testing.
 
 ```php
 class Filesystem
@@ -322,6 +340,20 @@ class Filesystem
     ) {}
 }
 ```
+
+### PHP functions autocomplete is lost in IDEs
+
+This is a natural consequence of this lib's approach. PHP functions autocomplete is lost given that we use a 'Proxy' class.
+
+However, we developed a tool that generates a 'Stub' file with all the PHP functions so that your IDE keeps the autocomplete for them.
+
+All you have to do is run the following command:
+
+```shell
+./vendor/filisko/testable-functions/bin/generate_stub.php [optinal path folder, by default it's <project>/.phpstorm-stubs]
+```
+
+Keep in mind that the functions that it loads in the Stub file are based on the active PHP extensions at runtime.
 
 ## Other testing utilities
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Filisko\Tests\Examples\Email;
@@ -9,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class EmailServiceTest extends TestCase
 {
-    public function test_sendEmail_exits_on_failure(): void
+    public function test_send_email_exits_on_failure(): void
     {
         // create FakeFunctions
         $functions = new FakeFunctions([
@@ -35,7 +36,7 @@ class EmailServiceTest extends TestCase
         );
     }
 
-    public function test_sendEmail_returns_true_on_success()
+    public function test_send_email_returns_true_on_success()
     {
         // create FakeFunctions
         $functions = new FakeFunctions([
@@ -55,7 +56,7 @@ class EmailServiceTest extends TestCase
         $this->assertFalse($functions->exited());
     }
 
-    public function test_sendEmail_throws_exception_on_invalid_email()
+    public function test_send_email_throws_exception_on_invalid_email()
     {
         // create FakeFunctions
         $functions = new FakeFunctions([

@@ -17,7 +17,7 @@ use Filisko\FakeStack\WasNotCalled;
 class FakeFunctions extends Functions
 {
     /**
-     * @var array<string,mixed|FakeStack> Functions and their results.
+     * @var array<string,mixed|FakeStack|FakeStatic> Functions and their preset results.
      */
     protected $functions;
 
@@ -32,12 +32,56 @@ class FakeFunctions extends Functions
     protected $calls = [];
 
     /**
+     * @var array<string,array> results of functions calls (doesn't include require/echo/etc. calls).
+     */
+    protected $results = [];
+
+    /**
      * @param array<string,mixed|FakeStack> $functions
      */
     public function __construct(array $functions = [], bool $failOnMissing = false)
     {
         $this->functions = $functions;
         $this->failOnMissing = $failOnMissing;
+    }
+
+    /**
+     * @param mixed|FakeStack|FakeStatic $value
+     */
+    public function set(string $function, $value): self
+    {
+        $this->functions[$function] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Recorded results of real functions calls (faked results are not stored).
+     */
+    public function results(string $function): array
+    {
+        return $this->results[$function] ?? [];
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function lastResult(string $function)
+    {
+        if (!isset($this->results[$function]) || $this->results[$function] === []) {
+            return null;
+        }
+
+        return end($this->results[$function]);
+    }
+
+    private function addResult(string $function, $result): void
+    {
+        if (!isset($this->results[$function])) {
+            $this->results[$function] = [];
+        }
+
+        $this->results[$function][] = $result;
     }
 
     private function addCall(string $function, array $args): void
@@ -194,7 +238,9 @@ class FakeFunctions extends Functions
                 return parent::$function(...$args);
             } else {
                 $this->addCall($function, $args);
-                return $function(...$args);
+                $functionResult = $function(...$args);
+                $this->addResult($function, $functionResult);
+                return $functionResult;
             }
         }
 

@@ -657,4 +657,31 @@ class FakeFunctionsTest extends TestCase
         // choose second argument
         $this->assertSame('second argument', $functions->firstArgument('trim', 1));
     }
+
+    public function test_add(): void
+    {
+        $functions = new FakeFunctions();
+
+        $add = $functions->add('mt_rand', new FakeStack([1, 5]));
+        $this->assertInstanceOf(FakeFunctions::class, $add);
+
+        $this->assertSame(1, $functions->mt_rand(1, 5));
+        $this->assertSame(5, $functions->mt_rand(1, 5));
+    }
+
+    public function test_results(): void
+    {
+        $functions = new FakeFunctions();
+
+        $result = $functions->mt_rand(1, 5);
+
+        $this->assertSame($result, $functions->results('mt_rand')[0]);
+        $this->assertSame($result, $functions->lastResult('mt_rand'));
+
+        $anotherOne = $functions->mt_rand(10, 15);
+        $this->assertSame($anotherOne, $functions->results('mt_rand')[1]);
+        $this->assertSame($anotherOne, $functions->lastResult('mt_rand'));
+
+        $this->assertNull($functions->lastResult('TEST'));
+    }
 }

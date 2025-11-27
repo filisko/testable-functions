@@ -63,7 +63,7 @@ class FunctionsTest extends TestCase
 
     public function test_exit(): void
     {
-        $functions = new class() extends Functions {
+        $functions = new class () extends Functions {
             public function exit($status)
             {
                 return $status;
@@ -75,7 +75,7 @@ class FunctionsTest extends TestCase
 
     public function test_die(): void
     {
-        $functions = new class() extends Functions {
+        $functions = new class () extends Functions {
             public function die($status)
             {
                 return $status;
