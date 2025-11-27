@@ -65,11 +65,11 @@ jobs:
                   key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
                   restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-composer-
 
-            - name: Run generate_stub.php
-              run: bin/generate_stub.php
-
             - name: Install dependencies
               run: composer install --prefer-dist --no-progress
+
+            - name: Run generate_stub.php
+              run: bin/generate_stub.php
 
             - name: Tests
               run: composer test
