@@ -39,6 +39,7 @@ jobs:
         strategy:
             matrix:
                 php:
+                    - 7.1
                     - 7.2
                     - 7.3
                     - 7.4
@@ -63,6 +64,9 @@ jobs:
                   path: vendor
                   key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
                   restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-composer-
+
+            - name: Run generate_stub.php
+              run: bin/generate_stub.php
 
             - name: Install dependencies
               run: composer install --prefer-dist --no-progress
