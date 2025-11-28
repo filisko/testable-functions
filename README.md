@@ -252,6 +252,9 @@ $functions->results('uuid')[0];
 // this way, you let the code run and only get the result of the function to do something more with it (e.g.: an ID) 
 // e.g.: 'fecbada3-0c27-47ce-addf-f840050ee204'
 $functions->lastResult('uuid');
+// you can also specify the number of result you want to get starting from the end
+// 0 is last (default), 1 is penultimate, etc.
+$functions->lastResult('uuid', 1);
 
 // returns an array of string[] of all the echos
 $functions->echos();
@@ -354,6 +357,8 @@ All you have to do is run the following command:
 ```
 
 Keep in mind that the functions that it loads in the Stub file are based on the active PHP extensions at runtime.
+
+Using this tool is optional, but it's recommended.
 
 ## Other testing utilities
 

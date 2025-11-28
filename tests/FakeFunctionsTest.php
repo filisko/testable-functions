@@ -673,15 +673,33 @@ class FakeFunctionsTest extends TestCase
     {
         $functions = new FakeFunctions();
 
-        $result = $functions->mt_rand(1, 5);
+        $firstResult = $functions->mt_rand(1, 5);
 
-        $this->assertSame($result, $functions->results('mt_rand')[0]);
-        $this->assertSame($result, $functions->lastResult('mt_rand'));
+        $this->assertSame($firstResult, $functions->results('mt_rand')[0]);
+        $this->assertSame($firstResult, $functions->lastResult('mt_rand'));
 
-        $anotherOne = $functions->mt_rand(10, 15);
-        $this->assertSame($anotherOne, $functions->results('mt_rand')[1]);
-        $this->assertSame($anotherOne, $functions->lastResult('mt_rand'));
+        $secondResult = $functions->mt_rand(10, 15);
+        $this->assertSame($secondResult, $functions->results('mt_rand')[1]);
+        $this->assertSame($secondResult, $functions->lastResult('mt_rand'));
 
+        // by number
+        $this->assertSame($firstResult, $functions->lastResult('mt_rand', 1));
+        $this->assertSame($secondResult, $functions->lastResult('mt_rand', 0));
+
+        $this->expectException(WasNotCalled::class);
+        $this->expectExceptionMessage('Function "TEST" was not called');
         $this->assertNull($functions->lastResult('TEST'));
+    }
+
+    public function test_results_exceptions(): void
+    {
+        $functions = new FakeFunctions();
+
+        $firstResult = $functions->mt_rand(1, 5);
+
+        $this->expectException(WasNotCalled::class);
+        $this->expectExceptionMessage('Function "mt_rand" was not called 1000 times (no associated value)');
+
+        $this->assertSame($firstResult, $functions->lastResult('mt_rand', 999));
     }
 }

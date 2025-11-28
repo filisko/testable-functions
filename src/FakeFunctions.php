@@ -66,13 +66,20 @@ class FakeFunctions extends Functions
     /**
      * @return mixed|null
      */
-    public function lastResult(string $function)
+    public function lastResult(string $function, int $number = 0)
     {
         if (!isset($this->results[$function]) || $this->results[$function] === []) {
-            return null;
+            throw new WasNotCalled(sprintf('Function "%s" was not called', $function));
         }
 
-        return end($this->results[$function]);
+        $list = $this->results[$function];
+        $index = count($list) - 1 - $number;
+
+        if (!isset($list[$index])) {
+            throw new WasNotCalled(sprintf('Function "%s" was not called %d times (no associated value)', $function, $number + 1));
+        }
+
+        return $list[$index];
     }
 
     private function addResult(string $function, $result): void

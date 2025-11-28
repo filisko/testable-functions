@@ -38,7 +38,7 @@ $fakeFunctions = new FakeFunctions();
 $fakeFunctions->set('function_exists', true);
 ```
 
-#### `$fakeFunctions->lastResult($function)` and `$fakeFunctions->results($function)`
+#### `$fakeFunctions->lastResult($function, $number)` and `$fakeFunctions->results($function)`
 
 These functions allow one to read the results of real function calls (not echo; print; require_once, etc.).
 
@@ -76,6 +76,10 @@ $userId = $functions->lastResult('uuid');
 
 // and do more things with it
 doMoreThingsWithTheUserId($userId);
+
+// you can also specify the number of result you want to get starting from the end
+// 0 is last (default), 1 is penultimate, etc.
+$penultimateUserId = $functions->lastResult('uuid', 1);
 ```
 
 ## [1.2.0] - 2025-05-31

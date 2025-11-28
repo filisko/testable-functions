@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * PHPSTORM STUB GENERATOR (PHP 7.1 → 8.4)
+ * IDE STUB GENERATOR (PHP 7.1 → 8.4)
  *
  * Usage:
  *   php generate-stubs.php /custom/output/dir
@@ -271,7 +271,7 @@ declare(strict_types=1);
 namespace Filisko;
 
 /**
- * AUTO-GENERATED STUB FOR PHPSTORM AUTOCOMPLETE
+ * AUTO-GENERATED STUB FOR IDEs AUTOCOMPLETE
  * DO NOT USE IN RUNTIME
  *
 $docblock
