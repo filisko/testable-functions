@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 /**
  * @param mixed|FakeStack|FakeStatic $value
  */
-public function set(string $string, $value): FakeFunctions;
+public function set(string $function, $value): FakeFunctions;
 ```
 
 A new method that allows postponing the setting of a function's preset result until it is needed.
