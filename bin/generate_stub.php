@@ -24,7 +24,7 @@ declare(strict_types=1);
  * NOT FOR RUNTIME USE.
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 /**
  * Polyfill for PHP < 8.0

@@ -356,7 +356,7 @@ All you have to do is run the following command:
 ./vendor/filisko/testable-functions/bin/generate_stub.php [optinal path folder, by default it's <project>/.phpstorm-stubs]
 ```
 
-Keep in mind that the functions that it loads in the Stub file are based on the active PHP extensions at runtime.
+Keep in mind that the functions that it loads in the Stub file are based on the active PHP extensions at runtime and loaded by composer.
 
 Using this tool is optional, but it's recommended.
 

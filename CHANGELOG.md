@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] - 2025-12-XX
+
+### Fixed
+
+Fixed a bug where the `generate_stub.php` script was loading `vendor/autoload.php` from the wrong directory when run externally.
+
+```shell
+./vendor/filisko/testable-functions/bin/generate_stub.php
+```
+
 ## [1.3.0] - 2025-11-27
 
 ### Added
