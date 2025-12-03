@@ -139,13 +139,13 @@ global $var;
 $functions->include($dirname);
 ```
 
-Keep in mind that loading things like globals will make them available across all the other tests and you may not want this:
+Keep in mind that loading things like globals will make them available across all the other tests, and you may not want this. To solve this issue, use PHPUnit's docblocks for each test method shown below:
 
 - globals (`@backupGlobals`)
 - classes or functions (`@runInSeparateProcess`, `@preserveGlobalState disabled`)
 - static variables or properties (`@backupStaticAttributes`)
 
-To solve this issue, use PHPUnit's docblocks shown above for each test method or [at class level with `@runTestsInSeparateProcesses`](https://docs.phpunit.de/en/10.5/annotations.html#runtestsinseparateprocesses):
+ ... or [at class level with `@runTestsInSeparateProcesses`](https://docs.phpunit.de/en/10.5/annotations.html#runtestsinseparateprocesses).
 
 ```php
 /**
@@ -158,7 +158,7 @@ public function test_with_functions_loading(): void
 }
 ```
 
-Furthermore, passing `--process-isolation` to PHPUnit will globally apply `@runInSeparateProcess` to each single test, but that's not a good practice.
+Furthermore, passing `--process-isolation` to PHPUnit will globally apply `@runInSeparateProcess` to every single test, but it's not a good idea to do it unless you know what you're doing.
 
 ### FakeFunctions class
 
