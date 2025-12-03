@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * IDE STUB GENERATOR (PHP 7.1 → 8.4)
+ * IDE STUB GENERATOR
  *
  * Usage:
  *   php generate-stubs.php /custom/output/dir
@@ -16,7 +16,7 @@ declare(strict_types=1);
  *
  * Includes:
  * - Internal functions (according to loaded extensions)
- * - User-defined functions (including namespaced)
+ * - User-defined functions (without including namespaced)
  * - Functions loaded via Composer (autoload/files)
  * - Normalized types, defaults, invisible characters
  * - Lowercase "null"
@@ -24,7 +24,15 @@ declare(strict_types=1);
  * NOT FOR RUNTIME USE.
  */
 
-require_once 'vendor/autoload.php';
+$cwd = getcwd();
+
+$autoload = $cwd.'/vendor/autoload.php';
+if (!file_exists($autoload)) {
+    echo 'Could not find conposer autoload.php in '.$autoload . PHP_EOL;
+    exit(1);
+}
+
+require_once $autoload;
 
 /**
  * Polyfill for PHP < 8.0
@@ -39,7 +47,7 @@ if (!function_exists('str_starts_with')) {
  * Resolve output directory (argument or default)
  */
 $customOutputDir = $argv[1] ?? null;
-$defaultOutputDir = realpath(__DIR__ . '/..') . '/.phpstorm-stubs';
+$defaultOutputDir = $cwd . '/.phpstorm-stubs';
 
 $outputDir = $customOutputDir
     ? rtrim($customOutputDir, "/")
@@ -66,10 +74,15 @@ echo "Output directory: $outputDir\n";
 $loadedExtensions = get_loaded_extensions();
 $loaded = array_fill_keys($loadedExtensions, true);
 
+echo PHP_EOL;
 echo "Loaded extensions:" . PHP_EOL;
+echo '- ' . $loadedExtensions[0];
+unset($loadedExtensions[0]);
 foreach ($loadedExtensions as $ext) {
-    echo "- $ext" . PHP_EOL;
+    echo ", $ext";
 }
+
+echo PHP_EOL . PHP_EOL;
 
 /**
  * Normalize type names
@@ -154,6 +167,10 @@ $functions = array_unique(array_merge(
 $lines = [];
 
 foreach ($functions as $fn) {
+    // do not include functions with namespace
+    if (strpos($fn, '\\') !== false) {
+        continue;
+    }
 
     try {
         $ref = new ReflectionFunction($fn);

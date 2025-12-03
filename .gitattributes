@@ -8,4 +8,4 @@
 .php-cs-fixer.php    export-ignore
 .phpstan.neon        export-ignore
 phpunit.xml          export-ignore
-CONTRIBUTING.md      export-ignore
+README.md            export-ignore
